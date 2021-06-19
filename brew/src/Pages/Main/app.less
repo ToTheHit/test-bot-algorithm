@@ -1,0 +1,90 @@
+.system-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-width: 80%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+
+  div {
+    font-size: 16px;
+    padding: 10px;
+
+    &:first-child {
+      border-right: 2px solid rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
+@baseTransform: translate(-50%, -50%);
+
+.gradient-test {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.translucent-alert {
+  position: fixed;
+  width: 200px;
+  height: auto;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  margin-left: -100px;
+  left: 50%;
+  top: 50%;
+  margin-top: -50px;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(100%);
+}
+
+@keyframes Pulse {
+  0% {
+    background: #f44336
+  }
+  10% {
+    background: #e91e63
+  }
+  20% {
+    background: #9c27b0
+  }
+  30% {
+    background: #673ab7
+  }
+  40% {
+    background: #2196f3
+  }
+  50% {
+    background: #00bcd4
+  }
+  60% {
+    background: #4caf50
+  }
+  70% {
+    background: #ffeb3b
+  }
+  80% {
+    background: #ff9800
+  }
+  90% {
+    background: #ff5722
+  }
+  100% {
+    background: #f44336
+  }
+}
+
+@media-width: {
+  PC_small: 1024px;
+  tablet: 768px;
+  mobile: 375px;
+  mobile_small: 320px;
+}
+
+@transition-time: {
+  fast: 0.2s;
+  medium: 0.5s;
+  slow: 0.8s;
+}

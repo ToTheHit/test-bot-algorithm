@@ -1,0 +1,24 @@
+export const ANDROID = 'android';
+export const IOS = 'ios';
+
+let ua;
+let platformName;
+
+export function platform(useragent) {
+  if (!ua) {
+    ua = useragent || (navigator && navigator.userAgent) || '';
+  }
+  if (!platformName) {
+    platformName = /android/i.test(ua) ? ANDROID : IOS;
+  }
+
+  return platformName;
+}
+
+export function iPhone() {
+  if (!ua) {
+    ua = (navigator && navigator.userAgent) || '';
+  }
+
+  return /iphone/i.test(ua);
+}

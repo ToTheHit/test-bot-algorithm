@@ -1,0 +1,144 @@
+@import "../../../Pages/Main/app.less";
+
+.Bicycle-b1 {
+  height: 100vh;
+  //background-position: center;
+  //background-repeat: no-repeat;
+  //background-size: cover;
+  position: relative;
+
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+  }
+  &__menu {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 35px;
+    font-weight: bold;
+    color:  #4d4959;
+
+    &-left {
+      margin-right: 60px;
+      padding-left: 25px;
+      width: 210px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &--item {
+        text-transform: uppercase;
+        border: none;
+        background: transparent;
+        font-family: "Lato", sans-serif;
+        font-weight: bold;
+        color: #4d4959;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &.point {
+          border: 2px solid  #4d4959;
+          border-radius: 50%;
+          &:hover {
+            cursor: default;
+          }
+        }
+      }
+    }
+
+    &-middle {
+      min-width: 94px;
+      min-height: 85px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    &-right {
+      margin-left: 60px;
+      padding-right: 25px;
+      width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &--item {
+        text-transform: uppercase;
+        border: none;
+        background: transparent;
+        font-family: "Lato", sans-serif;
+        font-weight: bold;
+        color: #4d4959;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &.point {
+          border: 2px solid  #4d4959;
+          border-radius: 50%;
+          &:hover {
+            cursor: default;
+          }
+        }
+      }
+    }
+
+  }
+
+  &__arrow {
+    border: solid #6dc5a3;
+    border-width: 0 10px 10px 0;
+    box-shadow: 5px 5px 3px rgba(13, 0, 0, 0.2);
+    display: inline-block;
+    padding: 10px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    position: absolute;
+    bottom: 30%;
+    left: calc(50% - 15px);
+    animation: arrow 2000ms linear infinite;
+    background: transparent;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  @media (max-width: 425px) {
+    &__menu {
+      .point {
+        margin: 10px 0;
+      }
+
+      &-left {
+        flex-direction: column;
+      }
+      &-right {
+        flex-direction: column;
+      }
+    }
+  }
+  @media (max-width: @media-width[mobile]) {
+    &__menu {
+      justify-content: space-evenly;
+      &-left {
+        display: none;
+      }
+      &-right {
+        display: none;
+      }
+    }
+  }
+
+  @keyframes arrow {
+    0%{bottom: 25%;}
+    50%{bottom: 30%;}
+    100%{bottom: 25%;}
+  }
+}

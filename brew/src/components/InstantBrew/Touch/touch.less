@@ -1,0 +1,37 @@
+
+.tappable-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.tappable {
+  position: relative;
+  -webkit-transition: opacity 300ms;
+  -moz-transition: opacity 300ms;
+  -ms-transition: opacity 300ms;
+  -o-transition: opacity 300ms;
+  transition: opacity 300ms;
+  opacity: 1;
+  
+  &.tapped {
+    opacity: 0.7;
+    -webkit-transition: opacity 300ms;
+    -moz-transition: opacity 300ms;
+    -ms-transition: opacity 300ms;
+    -o-transition: opacity 300ms;
+    transition: opacity 300ms;
+  }
+}
+
+@keyframes frostStartAnim {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+

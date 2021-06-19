@@ -1,0 +1,116 @@
+.brew-switch {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+
+  &--label {
+    font-size: 15px;
+    font-family: var(--common-text);
+    color: #000000;
+    margin-right: 10px;
+  }
+
+  &--button {
+    width: 38px;
+    height: 23px;
+    border-radius: 23px;
+    background-color: #FFFFFF;
+    border: 2px solid #E1E3E6;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    -webkit-transition: background-color 0.2s ease-in, border 0.2s ease-in;
+    -moz-transition: background-color 0.2s ease-in, border 0.2s ease-in;
+    -ms-transition: background-color 0.2s ease-in, border 0.2s ease-in;
+    -o-transition: background-color 0.2s ease-in, border 0.2s ease-in;
+    transition: background-color 0.2s ease-in, border 0.2s ease-in;
+
+    @media only screen
+    and (min-device-width: 320px)
+    and (max-device-width: 812px)
+    and (-webkit-min-device-pixel-ratio: 2) {
+      width: 50px;
+      height: 32px;
+    }
+
+    &:after {
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 3px 8px 0 rgba(0,0,0,0.2), 0 3px 1px 0 rgba(0,0,0,0.12);
+      content: "";
+      margin-left: 0;
+      -webkit-transition: margin-left 0.15s ease-in;
+      -moz-transition: margin-left 0.15s ease-in;
+      -ms-transition: margin-left 0.15s ease-in;
+      -o-transition: margin-left 0.15s ease-in;
+      transition: margin-left 0.15s ease-in;
+
+      @media only screen
+      and (min-device-width: 320px)
+      and (max-device-width: 812px)
+      and (-webkit-min-device-pixel-ratio: 2) {
+        width: 30px;
+        height: 30px;
+        margin-left: 1px;
+      }
+    }
+  }
+
+  &.active {
+    .brew-switch--button {
+      background-color: #59D022;
+      border: 2px solid #59D022;
+      
+      &:after {
+        margin-left: 15px;
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.3);
+      }
+    }
+
+    @media only screen
+    and (min-device-width: 320px)
+    and (max-device-width: 812px)
+    and (-webkit-min-device-pixel-ratio: 2) {
+      .brew-switch--button {
+
+        &:after {
+          margin-left: 19px;
+        }
+      }
+    }
+  }
+
+  &.micro {
+    .brew-switch--label {
+      font-size: 14px;
+    }
+
+    .brew-switch--button {
+      width: 42px;
+      height: 22px;
+
+      &:after {
+        width: 18px;
+        height: 18px;
+        margin-left: 2px;
+      }
+    }
+
+    &.active {
+      .brew-switch--button {
+        &:after {
+          margin-left: 22px;
+        }
+      }
+    }
+  }
+}

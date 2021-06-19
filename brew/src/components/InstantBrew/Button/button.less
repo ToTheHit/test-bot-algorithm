@@ -1,0 +1,271 @@
+.ib-tappable.ib-tappable {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.ib-tappable.ib-large {
+  display: flex;
+  width: 100%;
+
+  &.no-wide {
+    width: auto;
+  }
+}
+
+.instant-button {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 7px 12px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 8px 0;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  &.ib-large {
+    display: flex;
+    width: 100%;
+  }
+
+  &.ib-medium {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 10000px;
+  }
+
+  &.ib-small {
+    padding: 5px 12px;
+    border-radius: 10000px;
+  }
+
+  .button-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-family: var(--bold-text);
+    color: #FFFFFF;
+    letter-spacing: -0.34px;
+    text-align: center;
+    z-index: 1;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    -ms-transition: opacity 0.2s;
+    -o-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &.invisible {
+      opacity: 0;
+    }
+
+    .before, .after {
+      margin: 0 6px 0 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+
+      &.second-level {
+        text-shadow: none;
+      }
+    }
+
+    .after {
+      margin: 0 0 0 6px;
+    }
+
+    &.ib-medium {
+      font-size: 14px;
+    }
+
+    &.ib-small {
+      font-size: 12px;
+      .after { display: none; }
+      .before { display: none; }
+    }
+
+    &.mustard-color {
+      color: var(--mustard-text-color);
+    }
+
+    /* Secondary colors for flat buttons. */
+    &.flat-green-apple-text {
+      color: #2D6133;
+      text-shadow: none;
+    }
+
+    &.flat-clear-sky-text {
+      color: #425263;
+      text-shadow: none;
+    }
+
+    &.flat-indigo-text {
+      color: #514471;
+      text-shadow: none;
+    }
+
+    &.flat-mustard-text {
+      color: #7B3E05;
+      text-shadow: none;
+    }
+
+    &.flat-veronika-text {
+      color: #CB182A;
+      text-shadow: none;
+    }
+
+    &.flat-royal-blue-text {
+      color: #425263;
+      text-shadow: none;
+    }
+  }
+
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0);
+    -webkit-transition: background-color 0.15s ease-in;
+    -moz-transition: background-color 0.15s ease-in;
+    -ms-transition: background-color 0.15s ease-in;
+    -o-transition: background-color 0.15s ease-in;
+    transition: background-color 0.15s ease-in;
+  }
+
+  &:hover:not(.loading) {
+    cursor: pointer;
+    &::after {
+      background: rgba(0,0,0,0.1);
+
+
+      /* iPhone 5c, 5s */
+      @media only screen
+      and (min-device-width: 320px)
+      and (max-device-width: 568px)
+      and (-webkit-min-device-pixel-ratio: 2) {
+        background: rgba(0,0,0,0);
+      }
+
+      @media only screen
+      and (min-device-width: 414px)
+      and (max-device-width: 736px)
+      and (-webkit-min-device-pixel-ratio: 3) {
+        background: rgba(0,0,0,0);
+      }
+
+      /* iPhone X */
+      @media only screen
+      and (min-device-width: 375px)
+      and (max-device-width: 812px)
+      and (-webkit-min-device-pixel-ratio: 3) {
+        background: rgba(0,0,0,0);
+      }
+
+    }
+  }
+
+  &:active {
+    &::after {
+      background-color: rgba(255,255,255,0.1) !important;
+    }
+  }
+
+  &.disabled {
+    background: #D7DCE0;
+
+    .button-content {
+      color: var(--grey);
+      text-shadow: none;
+
+      .after, .before {
+        text-shadow: none;
+      }
+    }
+
+    &:hover {
+      cursor: default;
+      &::after {
+        background-color: rgba(0,0,0,0);
+      }
+    }
+
+    &:active {
+      &::after {
+        background-color: rgba(255,255,255,0) !important;
+      }
+    }
+  }
+
+
+  /* Mobile devices. Portrait and Landscape */
+  @media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+    padding: 16px;
+    border-radius: 10px;
+
+    &:focus-within {
+      background: transparent;
+    }
+
+    &:hover {
+      &::after {
+        background: rgba(0,0,0,0);
+      }
+    }
+
+    &:visited {
+      &::after {
+        background: rgba(0,0,0,0);
+      }
+    }
+
+    &:active {
+      &::after {
+        background: rgba(0,0,0,0);
+      }
+    }
+
+    .button-content {
+      font-size: 18px;
+      font-family: var(--medium-text);
+
+      &.ib-medium {
+        font-size: 15px;
+      }
+
+      &.ib-small {
+        font-size: 14px;
+      }
+    }
+
+    &.ib-medium {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 10000px;
+    }
+  }
+}
+
+.ib-align-center {
+  margin: 0 auto;
+}
+
+.ib-align-right {
+  margin-left: auto;
+  margin-right: 0;
+}
