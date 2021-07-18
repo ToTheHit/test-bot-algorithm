@@ -11,11 +11,11 @@ class App extends Component {
   }
 
   render() {
-    const {} = this.state;
-    return (
-      <div className='App'>
-        <h1 className="AppHeader">InstantBrew - Template</h1>
+    // const {} = this.state;
 
+    return (
+      <div className="App">
+        <h1 className="AppHeader">InstantBrew - Template</h1>
       </div>
     );
   }

@@ -1,0 +1,28 @@
+.FlowPort {
+  position: relative;
+  height: 30px;
+  width: 30px;
+  background: white;
+  margin: 15px;
+  clip-path: polygon(0px 0px, 20px 0px, 30px 15px, 20px 30px, 0px 30px);
+  cursor: pointer;
+
+  &::after {
+    opacity: 0;
+    transition: opacity 0.2s;
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    height: 28px;
+    width: 28px;
+    clip-path: polygon(0px 0px, 18px 0px, 28px 14px, 18px 28px, 0px 28px);
+    background: #2C2C2C;
+  }
+
+  &--inactive {
+    &::after {
+      opacity: 1;
+    }
+  }
+}

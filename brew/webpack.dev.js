@@ -5,18 +5,19 @@ const common = require('./webpack.config');
 module.exports = merge(common, {
   mode: 'development',
   output: {
-    publicPath: '/',
+    publicPath: '/'
   },
+  target: 'web',
   devServer: {
     contentBase: './dist',
     allowedHosts: [
       '.ngrok.io',
-      '.vk.com',
+      '.vk.com'
     ],
     host: '0.0.0.0',
     port: 10880,
     publicPath: '/',
-    historyApiFallback: true,
+    historyApiFallback: true
   },
   module: {
     rules: [
@@ -26,14 +27,14 @@ module.exports = merge(common, {
           {
             loader: 'style-loader',
             options: {
-              injectType: 'styleTag',
-            },
+              injectType: 'styleTag'
+            }
           },
           {
             loader: 'css-loader',
-            options: { },
-          },
-        ],
+            options: { }
+          }
+        ]
       },
       {
         test: /\.less$/,
@@ -41,25 +42,25 @@ module.exports = merge(common, {
           {
             loader: 'style-loader',
             options: {
-              injectType: 'styleTag',
-            },
+              injectType: 'styleTag'
+            }
           },
           {
             loader: 'css-loader',
-            options: {},
+            options: {}
           },
           {
-            loader: 'less-loader',
-          },
-        ],
-      },
-    ],
+            loader: 'less-loader'
+          }
+        ]
+      }
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        PUBLIC_URL: JSON.stringify(''),
-      },
-    }),
-  ],
+        PUBLIC_URL: JSON.stringify('')
+      }
+    })
+  ]
 });

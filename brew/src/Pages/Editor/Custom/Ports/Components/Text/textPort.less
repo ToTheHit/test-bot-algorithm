@@ -1,0 +1,42 @@
+.Port {
+  min-width: 90px;
+  width: fit-content;
+  height: 30px;
+  background: rgba(237, 237, 237, 0.2);
+  display: flex;
+  align-items: center;
+  color: white;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+  margin-bottom: 15px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+
+  &--right {
+    flex-direction: row-reverse;
+    border-radius: 30px 0 0 30px;
+  }
+
+  &--connected {
+    opacity: 1;
+  }
+
+  &__connector {
+    width: 30px;
+    height: 30px;
+    background: #EDEDED;
+    border-radius: 0 30px 30px 0;
+    &--right {
+      border-radius: 30px 0 0 30px;
+    }
+  }
+  &__label {
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-right: 15px;
+    &--right {
+      padding-right: 0;
+      padding-left: 15px;
+    }
+  }
+}
