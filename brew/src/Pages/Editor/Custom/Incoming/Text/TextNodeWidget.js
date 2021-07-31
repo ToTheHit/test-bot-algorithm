@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './textNode.less';
 import EditorStore from '../../../../../mobx/EditorStore';
 import { FlowPort, TextPort } from '../../Ports/Components';
+import classNames from '../../../../../lib/classNames';
 
 const TextNodeWidget = props => {
   // eslint-disable-next-line react/prop-types
@@ -11,7 +12,7 @@ const TextNodeWidget = props => {
   const { portStatus } = EditorStore;
 
   return (
-    <div className="TextNode">
+    <div className={classNames('TextNode', { 'TextNode--selected': node.isSelected() })}>
       <div className="TextNode__header">
         <div className="TextNode__type" />
         <div className="TextNode__title">Текст</div>
@@ -31,7 +32,7 @@ const TextNodeWidget = props => {
         />
       </div>
       <div className="TextNode__contentPorts">
-        <div className="TextNode__connectedPort__left">
+        <div className="TextNode__contentPorts__left">
           <TextPort
             port={node.getPort('incomingText')}
             node={node}
@@ -53,7 +54,7 @@ const TextNodeWidget = props => {
             portStatus={portStatus[node.getPort('comparisonText').options.id]}
           />
         </div>
-        <div className="TextNode__connectedPort__right">
+        <div className="TextNode__contentPorts__right">
           <TextPort
             port={node.getPort('outgoingMsg')}
             node={node}
