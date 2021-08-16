@@ -44,7 +44,7 @@ export default class CustomPortModel extends PortModel {
   canLinkToPort(port) {
     const links = Object.values(this.getLinks() || {});
 
-    if (this.options.type !== port.options.type) {
+    if (this.options.type !== port.options.type && port.options.type !== 'variable') {
       return false;
     }
 

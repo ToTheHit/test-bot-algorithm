@@ -9,10 +9,6 @@ import {
   CanvasWidget
 } from '@projectstorm/react-canvas-core';
 
-import { CustomNode } from './CustomNodes/CustomNode';
-import { CustomNodeFactory } from './Custom/NodeFactory';
-import CustomNodeModel from './Custom/NodeModel';
-
 import classNames from '../../lib/classNames';
 import './editor.less';
 
@@ -24,7 +20,8 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 
 import store from '../../mobx/Store';
 import EditorStore from '../../mobx/EditorStore';
-import Output from './Output';
+import StartNodeModel from './Custom/Start/startNodeModel';
+import StartNodeFactory from './Custom/Start/StartNodeFactory';
 
 /*
   const { count, change } = store;
@@ -96,7 +93,7 @@ const testModel = {
       models: {
         'f5e3b97b-34cd-48b8-807e-ea662f09f4bf': {
           id: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-          type: 'incomingText',
+          type: 'incomingMsg',
           selected: true,
           x: 294,
           y: 210,
@@ -126,7 +123,7 @@ const testModel = {
               type: 'text',
               x: 295,
               y: 336,
-              name: 'incomingText',
+              name: 'incomingMsg',
               alignment: 'left',
               parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
               links: []
@@ -190,6 +187,21 @@ const fn = model => {
   return model;
 };
 
+const factories = {
+  textNode: new TextNodeFactory(),
+  variableNode: new VariableNodeFactory(),
+  startNode: new StartNodeFactory()
+};
+
+const models = {
+  textNode: data => new TextNodeModel(data),
+  variableNode: data => new VariableNodeModel(data),
+  startNode: data => new StartNodeModel(data)
+};
+const hiddenNodes = {
+  startNode: true
+};
+
 const Editor = () => {
   const { updateNode, updateLink } = EditorStore;
   const [engine, setEngine] = useState(null);
@@ -199,17 +211,11 @@ const Editor = () => {
   useEffect(() => {
     const subEngine = createEngine();
 
-    subEngine
-      .getNodeFactories()
-      .registerFactory(new CustomNodeFactory());
-
-    subEngine
-      .getNodeFactories()
-      .registerFactory(new TextNodeFactory());
-
-    subEngine
-      .getNodeFactories()
-      .registerFactory(new VariableNodeFactory());
+    for (const factoryName of Object.keys(factories)) {
+      subEngine
+        .getNodeFactories()
+        .registerFactory(factories[factoryName]);
+    }
 
     model.registerListener({
       linksUpdated(event) {
@@ -225,46 +231,59 @@ const Editor = () => {
   }, []);
 
   useEffect(() => {
-    const TextNode = new TextNodeModel({
-      name: 'TextNode',
-      color: 'rgb(47,255,0)'
-    });
+    // const StartNode = new TextNodeModel({
+    //   title: 'StartNode'
+    // });
 
-    TextNode.setPosition(250, 200);
+    // StartNode.setPosition(200, 200);
+    //
+    // model.addAll(StartNode);
+    const TextNode = models.textNode({ title: 'TextNode' });
+
+    TextNode.setPosition(650, 200);
     const comparisonPortTextNode = TextNode.getPort('comparisonText');
 
     model.addAll(TextNode);
 
-    /*    const TextNode2 = new TextNodeModel({
-      name: 'TextNode #2',
-      color: 'rgb(255,224,0)'
-    });
+    const TextNode2 = models.textNode({ title: 'TextNode #2' });
 
-    TextNode2.setPosition(450, 400);
-    model.addAll(TextNode2); */
+    TextNode2.setPosition(1150, 200);
+    const comparisonPortTextNode2 = TextNode2.getPort('comparisonText');
 
-    /*
-    const CustomNode = new CustomNodeModel({
-      name: 'TextNode #2',
-      color: 'rgb(255,224,0)'
-    });
+    const textNodel1Out = TextNode.getPort('flowOut');
+    const textNodel2In = TextNode2.getPort('flowIn');
+    const linkFlow = textNodel1Out.link(textNodel2In);
+    // incomingText outgoingMsg  incomingMsg
+    // const textNodel1Text = TextNode.getPort('outgoingMsg');
+    // const textNodel2Msg = TextNode2.getPort('incomingMsg');
+    // const linkMsg = textNodel1Text.link(textNodel2Msg);
 
-    model.addAll(CustomNode);
-    */
+    model.addAll(TextNode2, linkFlow);
 
-    const VariableNode = new VariableNodeModel({
-      name: 'TextNode #2',
-      color: 'rgb(255,224,0)'
-    });
-
-    VariableNode.setPosition(50, 400);
-
+    const VariableNode = models.variableNode({ title: 'First', value: 'First' });
     const variableNodeOutPort = VariableNode.getPort('out');
+    const link1 = comparisonPortTextNode.link(variableNodeOutPort);
 
-    const link1 = variableNodeOutPort.link(comparisonPortTextNode);
+    VariableNode.setPosition(460, 470);
     link1.addLabel('Авто-линк');
 
     model.addAll(VariableNode, link1);
+
+    const VariableNode2 = models.variableNode({ title: 'Second', value: 'Second' });
+    const variableNodeOutPort2 = VariableNode2.getPort('out');
+    const link2 = comparisonPortTextNode2.link(variableNodeOutPort2);
+
+    VariableNode2.setPosition(1000, 350);
+    model.addAll(VariableNode2, link2);
+
+    const StartNode = models.startNode();
+
+    StartNode.setPosition(200, 200);
+    const startFlowPort = StartNode.getPort('flowOut');
+    const textNodel1In = TextNode.getPort('flowIn');
+    const linkFlowStart = textNodel1In.link(startFlowPort);
+
+    model.addAll(StartNode, linkFlowStart);
 
     // variableNodeOutPort.link(comparisonPortTextNode);
     // node3.addOutPort('Out3');
@@ -318,21 +337,76 @@ const Editor = () => {
     setData(temp);
   }, [count]); */
 
+  /*
   useEffect(() => {
-    console.log(fn(testModel))
+    console.log(fn(testModel));
   }, []);
+*/
+
+  const [modelElements, setModelElement] = useState([]);
+  const handleDragStart = (event, modelName) => {
+    event.dataTransfer.setData('modelName', modelName);
+  };
+
+  useEffect(() => {
+    const reactElements = [];
+
+    for (const modelName of Object.keys(models)) {
+      if (!hiddenNodes[modelName]) {
+        reactElements.push(
+          <div
+            className="ControlPanel__node"
+            draggable
+            onDragStart={event => handleDragStart(event, modelName)}
+          >
+            {modelName}
+          </div>
+        );
+      }
+    }
+
+    setModelElement(reactElements);
+  }, []);
+
+  const onNodeDrop = event => {
+    const modelName = event.dataTransfer.getData('modelName');
+    const Node = models[modelName]();
+    const { x, y } = engine.getRelativeMousePoint(event);
+
+    Node.setPosition(x, y);
+    model.addAll(Node);
+    // forceUpdate();
+    engine.repaintCanvas();
+  };
+  const handleDragOver = event => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+
+    return false;
+  };
 
   return (
     <div
       className={classNames('test-wrapper')}
       onContextMenu={e => {
-        // e.preventDefault();
+      // e.preventDefault();
       }}
     >
       {/* <button onClick={() => change(0)}>test1</button> */}
       {/* {data} */}
-      <button onClick={() => test()}>test</button>
-       {engine && <CanvasWidget engine={engine} className="canvas-widget" />}
+      <div className="ControlPanel">
+        <button type="button" onClick={() => test()}>Export</button>
+        <div className="ControlPanel__nodesList">
+          {modelElements}
+        </div>
+      </div>
+      <div
+        style={{ height: '100%', width: '100%' }}
+        onDrop={event => onNodeDrop(event)}
+        onDragOver={handleDragOver}
+      >
+        {engine && <CanvasWidget engine={engine} className="canvas-widget" />}
+      </div>
     </div>
   );
 };

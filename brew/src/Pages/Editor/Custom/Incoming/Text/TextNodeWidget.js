@@ -15,7 +15,7 @@ const TextNodeWidget = props => {
     <div className={classNames('TextNode', { 'TextNode--selected': node.isSelected() })}>
       <div className="TextNode__header">
         <div className="TextNode__type" />
-        <div className="TextNode__title">Текст</div>
+        <div className="TextNode__title">{node.title}</div>
       </div>
       <div className="TextNode__flowPorts">
         <FlowPort
@@ -33,16 +33,16 @@ const TextNodeWidget = props => {
       </div>
       <div className="TextNode__contentPorts">
         <div className="TextNode__contentPorts__left">
-          <TextPort
-            port={node.getPort('incomingText')}
+          {/*          <TextPort
+            port={node.getPort('incomingMsg')}
             node={node}
             engine={engine}
-            name="incomingText"
+            name="incomingMsg"
             align="left"
-            color="#EDEDED"
-            label="Текст"
-            portStatus={portStatus[node.getPort('incomingText').options.id]}
-          />
+            color="#7FFF6A"
+            label="Сообщение"
+            portStatus={portStatus[node.getPort('incomingMsg').options.id]}
+          /> */}
           <TextPort
             port={node.getPort('comparisonText')}
             node={node}
@@ -54,7 +54,7 @@ const TextNodeWidget = props => {
             portStatus={portStatus[node.getPort('comparisonText').options.id]}
           />
         </div>
-        <div className="TextNode__contentPorts__right">
+        {/*        <div className="TextNode__contentPorts__right">
           <TextPort
             port={node.getPort('outgoingMsg')}
             node={node}
@@ -65,7 +65,7 @@ const TextNodeWidget = props => {
             label="Сообщение"
             portStatus={portStatus[node.getPort('outgoingMsg').options.id]}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

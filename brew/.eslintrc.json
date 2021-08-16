@@ -3,14 +3,11 @@
   /**
    * @see https://github.com/airbnb/javascript
    */
-  "parser": "@typescript-eslint/parser",
+//  "parser": "@typescript-eslint/parser",
   "extends": [
     "airbnb-base",
     "plugin:react/recommended",
-    "airbnb",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "eslint:recommended"
+    "airbnb"
   ],
   /**
    * @see http://eslint.org/docs/rules/
@@ -143,8 +140,7 @@
     "security",
     "you-dont-need-lodash-underscore",
     "you-dont-need-momentjs",
-    "sonarjs",
-    "@typescript-eslint"
+    "sonarjs"
   ],
   "parserOptions": {
     "ecmaFeatures": {

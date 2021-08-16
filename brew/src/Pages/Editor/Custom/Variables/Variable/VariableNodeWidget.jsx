@@ -12,7 +12,7 @@ const VariableNodeWidget = props => {
   const { portStatus } = EditorStore;
 
   const [align, setAlign] = useState('right');
-  const [title, setTitle] = useState('Title Variable');
+  const [title, setTitle] = useState(node.title || 'Title Variable');
 
   return (
     <div className={classNames('VariableNode', { 'VariableNode--selected': node.isSelected() })}>
