@@ -15,8 +15,15 @@ class VariableNodeModel extends NodeModel {
     return {
       ...super.serialize(),
       value: this.value,
-      title: this.title
+      title: this.value
     };
+  }
+
+  deserialize(event) {
+    super.deserialize(event);
+    this.value = event.data.value;
+    // TODO: update title after redesign editor
+    this.title = event.data.value;
   }
 }
 

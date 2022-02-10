@@ -2,8 +2,8 @@ const path = require('path');
 const MTProto = require('@mtproto/core');
 const { sleep } = require('@mtproto/core/src/utils/common');
 
-const api_id = 000;
-const api_hash = '---';
+const api_id = 7281870;
+const api_hash = 'f601f39cd0d629b5b95c14db53d6133a';
 
 class API {
   constructor({ test } = { test: false }) {

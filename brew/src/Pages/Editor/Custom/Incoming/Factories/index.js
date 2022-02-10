@@ -1,3 +1,3 @@
-import TextNodeFactory from '../Text/TextNodeFactory';
+import IncomingTextNodeFactory from '../Text/IncomingTextNodeFactory';
 
-export { TextNodeFactory };
+export { IncomingTextNodeFactory };

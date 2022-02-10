@@ -1,3 +1,3 @@
-import TextNodeModel from '../Text/TextNodeModel';
+import IncomingTextNodeModel from '../Text/IncomingTextNodeModel';
 
-export { TextNodeModel };
+export { IncomingTextNodeModel };

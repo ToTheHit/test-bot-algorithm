@@ -20,7 +20,7 @@ export default class Routes {
     });
 
     app.get('/test', (req, res) => {
-      res.end("That's all folks, yeah!");
+      res.end("That's all folks, yeah!55555");
     });
 
     // Uploads a new file on the server.

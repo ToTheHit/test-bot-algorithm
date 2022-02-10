@@ -12,28 +12,26 @@ import {
 import classNames from '../../lib/classNames';
 import './editor.less';
 
-import { TextNodeFactory } from './Custom/Incoming/Factories';
-import { TextNodeModel } from './Custom/Incoming/Models';
+import { IncomingTextNodeFactory } from './Custom/Incoming/Factories';
+import { IncomingTextNodeModel } from './Custom/Incoming/Models';
+
+import { OutgoingTextNodeFactory } from './Custom/Outgoing/Factories';
+import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
 
 import { VariableNodeFactory } from './Custom/Variables/Factories';
 import { VariableNodeModel } from './Custom/Variables/Models';
 
-import store from '../../mobx/Store';
-import EditorStore from '../../mobx/EditorStore';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import StartNodeFactory from './Custom/Start/StartNodeFactory';
 
-/*
-  const { count, change } = store;
-  const [data, setData] = useState([]);
+import TextPortFactory from './Custom/Ports/Components/Text/TextPortFactory';
+import FlowPortFactory from './Custom/Ports/Components/Flow/FlowPortFactory';
+import VariablePortFactory from './Custom/Ports/Components/Variable/VariablePortFactory';
 
-  useEffect(() => {
-    console.log('useEffect');
-    const temp = count.map(obj => <Output key={obj.id} obj={obj} />);
+import store from '../../mobx/Store';
+import EditorStore from '../../mobx/EditorStore';
 
-    setData(temp);
-  }, [count]);
-*/
+import axios from 'axios';
 
 const testModel = {
   id: 'a1ad350f-5bae-4bda-83ad-f08769a55476',
@@ -177,33 +175,31 @@ const testModel = {
   ]
 };
 
-const fn = model => {
-  const nodes = model.layers.find(layer => layer.type === 'diagram-nodes').models;
-  const links = model.layers.find(layer => layer.type === 'diagram-links').models;
-
-  console.log('>> nodes', nodes);
-  console.log('>> links', links);
-
-  return model;
-};
-
-const factories = {
-  textNode: new TextNodeFactory(),
+const nodeFactories = {
+  textNode: new IncomingTextNodeFactory(),
   variableNode: new VariableNodeFactory(),
-  startNode: new StartNodeFactory()
+  startNode: new StartNodeFactory(),
+  outgoingText: new OutgoingTextNodeFactory()
 };
+
+const portFactories = {
+  textPort: new TextPortFactory('text'),
+  flowPort: new FlowPortFactory('flow'),
+  variablePort: new VariablePortFactory('variable')
+}
 
 const models = {
-  textNode: data => new TextNodeModel(data),
+  textNode: data => new IncomingTextNodeModel(data),
   variableNode: data => new VariableNodeModel(data),
-  startNode: data => new StartNodeModel(data)
+  startNode: data => new StartNodeModel(data),
+  outgoingText: data => new OutgoingTextNodeModel(data)
 };
 const hiddenNodes = {
   startNode: true
 };
 
 const Editor = () => {
-  const { updateNode, updateLink } = EditorStore;
+  const { updateNode, updateLink, serialize, deserialize } = EditorStore;
   const [engine, setEngine] = useState(null);
 
   const [model, setModel] = useState(new DiagramModel());
@@ -211,10 +207,16 @@ const Editor = () => {
   useEffect(() => {
     const subEngine = createEngine();
 
-    for (const factoryName of Object.keys(factories)) {
+    for (const factoryName of Object.keys(nodeFactories)) {
       subEngine
         .getNodeFactories()
-        .registerFactory(factories[factoryName]);
+        .registerFactory(nodeFactories[factoryName]);
+    }
+
+    for (const factoryName of Object.keys(portFactories)) {
+      subEngine
+        .getPortFactories()
+        .registerFactory(portFactories[factoryName]);
     }
 
     model.registerListener({
@@ -231,13 +233,6 @@ const Editor = () => {
   }, []);
 
   useEffect(() => {
-    // const StartNode = new TextNodeModel({
-    //   title: 'StartNode'
-    // });
-
-    // StartNode.setPosition(200, 200);
-    //
-    // model.addAll(StartNode);
     const TextNode = models.textNode({ title: 'TextNode' });
 
     TextNode.setPosition(650, 200);
@@ -297,13 +292,8 @@ const Editor = () => {
     // model.addAll(TextNode, TextNode2);
   }, []);
 
-  useEffect(() => {
-    // engine.setModel(model);
-  }, [model]);
-
   const removeNode = () => {
     const nodes = model.getNodes();
-    // console.log(test);
 
     nodes[0].remove();
     engine.repaintCanvas();
@@ -322,10 +312,11 @@ const Editor = () => {
     link.labels[0].options.label = '1';
     engine.repaintCanvas();
   };
-  const test = () => {
+  const exportModel = () => {
     const serialized = model.serialize();
 
-    console.log('serialized model', serialized);
+    Object.assign(serialized, serialize());
+    console.log(serialized);
   };
 
   const { count, change } = store;
@@ -358,6 +349,7 @@ const Editor = () => {
             className="ControlPanel__node"
             draggable
             onDragStart={event => handleDragStart(event, modelName)}
+            key={`ControlPanel__node__${modelName}`}
           >
             {modelName}
           </div>
@@ -385,6 +377,21 @@ const Editor = () => {
     return false;
   };
 
+    const downloadModel = () => {
+      axios.get('http://localhost:3000/algorithm')
+        .then(res => {
+          model.deserializeModel(res.data, engine);
+          engine.setModel(model);
+          deserialize(res.data.store);
+        });
+  }
+  const saveModel = () => {
+    const serialized = model.serialize();
+
+    Object.assign(serialized, serialize());
+    axios.patch('http://localhost:3000/algorithm', serialized)
+  }
+
   return (
     <div
       className={classNames('test-wrapper')}
@@ -392,10 +399,10 @@ const Editor = () => {
       // e.preventDefault();
       }}
     >
-      {/* <button onClick={() => change(0)}>test1</button> */}
-      {/* {data} */}
       <div className="ControlPanel">
-        <button type="button" onClick={() => test()}>Export</button>
+        <button type="button" onClick={() => downloadModel()}>Download</button>
+        {/*<button type="button" onClick={() => exportModel()}>Export</button>*/}
+        <button type="button" onClick={() => saveModel()}>Save</button>
         <div className="ControlPanel__nodesList">
           {modelElements}
         </div>

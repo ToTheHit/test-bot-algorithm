@@ -2,7 +2,7 @@ const express = require('express');
 const asyncify = require('express-asyncify');
 const telegramRouter = require('../ibds/src/Routes/Telegram');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = asyncify(express());
 
 app.use(express.json());

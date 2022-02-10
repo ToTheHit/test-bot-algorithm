@@ -1,17 +1,17 @@
 import { NodeModel } from '@projectstorm/react-diagrams';
 import { FlowPortModel, TextPortModel, MessagePortModel } from '../../Ports/Models';
 
-class TextNodeModel extends NodeModel {
+class OutgoingTextNodeModel extends NodeModel {
   constructor(options = {}) {
     super({
-      type: 'incomingText'
+      type: 'outgoingText'
     });
-    this.title = options.title || 'Text node';
+    this.title = options.title || 'Outgoing text node';
 
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
     // this.addPort(new MessagePortModel('incomingMsg', 'left'));
-    this.addPort(new TextPortModel('comparisonText', 'left'));
+    this.addPort(new TextPortModel('outgoingText', 'left'));
     // this.addPort(new MessagePortModel('outgoingMsg', 'right'));
   }
 
@@ -23,4 +23,4 @@ class TextNodeModel extends NodeModel {
   }
 }
 
-export default TextNodeModel;
+export default OutgoingTextNodeModel;

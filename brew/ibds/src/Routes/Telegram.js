@@ -3,7 +3,7 @@ const API = require('../Engine/telegram');
 
 const telegramRouter = new Router();
 const allowedIds = new Map([
-  ['-----', '2nd profile']
+  ['1793944123', '2nd profile']
 ]);
 const api = new API();
 
@@ -68,6 +68,7 @@ api.mtproto.updates.on('updates', updateInfo => {
     if (!message) {
       continue;
     }
+
     if (allowedIds.get(message.peer_id.user_id)) {
       messages.push(message);
     }

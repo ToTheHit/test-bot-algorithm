@@ -21,12 +21,10 @@ export default class CustomPortModel extends PortModel {
 
     linkModel.registerListener({
       sourcePortChanged(event) {
-        // console.log('>>> sourcePortChanged', this);
-        updateLinkPort(event.port);
+        updateLinkPort(event.entity, event.port);
       },
       targetPortChanged(event) {
-        // console.log('>>> targetPortChanged', this);
-        updateLinkPort(event.port);
+        updateLinkPort(event.entity, event.port);
       }
     });
 
@@ -70,5 +68,13 @@ export default class CustomPortModel extends PortModel {
     link.setTargetPort(port);
 
     return link;
+  }
+
+  deserialize(event) {
+    super.deserialize(event);
+
+    if (Object.keys(this.links).length > 0) {
+      updateLinkPort(this.links[0], this);
+    }
   }
 }

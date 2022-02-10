@@ -12,4 +12,8 @@ export default class VariablePortModel extends CustomPortModel {
 
     return false;
   }
+
+  deserialize(event, engine) {
+    super.deserialize(event, engine);
+  }
 }

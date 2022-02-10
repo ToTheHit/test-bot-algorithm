@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { AbstractReactFactory } from '@projectstorm/react-canvas-core';
-import TextNodeModel from './TextNodeModel';
+import IncomingTextNodeModel from './IncomingTextNodeModel';
 import TextNodeWidget from './TextNodeWidget';
 
-export default class TextNodeFactory extends AbstractReactFactory {
-  constructor() {
+export default class IncomingTextNodeFactory extends AbstractReactFactory {
+  constructor(contTest) {
     super('incomingText');
   }
 
@@ -13,6 +13,6 @@ export default class TextNodeFactory extends AbstractReactFactory {
   }
 
   generateModel(event) {
-    return new TextNodeModel();
+    return new IncomingTextNodeModel(event.initialConfig);
   }
 }

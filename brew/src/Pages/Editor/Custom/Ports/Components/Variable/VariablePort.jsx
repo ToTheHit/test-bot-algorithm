@@ -17,6 +17,7 @@ const VariablePort = props => {
     portStatus: isConnected
   } = props;
 
+
   return (
     <div
       className={classNames(
@@ -32,13 +33,8 @@ const VariablePort = props => {
           'VariablePort__connector',
           { 'VariablePort__connector--right': align === 'right' }
         )}
-      >
-        <div
-
-        />
-      </PortWidget>
+      />
     </div>
-
   );
 };
 

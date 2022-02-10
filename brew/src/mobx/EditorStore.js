@@ -4,6 +4,7 @@ class Store {
   nodes = [];
   links = [];
   portStatus = {};
+  portsByLink = {}
 
   constructor() {
     makeObservable(this, {
@@ -12,8 +13,32 @@ class Store {
       portStatus: observable,
       updateNode: action,
       updateLink: action,
-      updateLinkPort: action
+      updateLinkPort: action,
+      serialize: action
     });
+  }
+
+  serialize = () => ({
+    store: {
+      nodes: JSON.parse(JSON.stringify(this.nodes)),
+      links: JSON.parse(JSON.stringify(this.links)),
+      portStatus: JSON.parse(JSON.stringify(this.portStatus)),
+      portsByLink: JSON.parse(JSON.stringify(this.portsByLink))
+    }
+  })
+
+  deserialize = (data = {}) => {
+    const {
+      nodes = [],
+      links = [],
+      portStatus = {},
+      portsByLink = {}
+    } = data;
+
+    this.nodes = nodes;
+    this.links = links;
+    this.portStatus = portStatus;
+    this.portsByLink = portsByLink;
   }
 
   updateNode = (node) => {
@@ -25,18 +50,29 @@ class Store {
       this.links[link.options.id] = link;
     } else {
       delete this.links[link.options.id];
-      this.portStatus[link.sourcePort.options.id] -= 1;
-      if (link.targetPort) {
-        this.portStatus[link.targetPort.options.id] -= 1;
-      }
+      this.portsByLink[link.options.id].forEach(portId => {
+        this.portStatus[portId] -= 1;
+      })
+
+      delete this.portsByLink[link.options.id];
     }
   }
 
-  updateLinkPort = port => {
-    if (this.portStatus[port.options.id] === undefined) {
-      this.portStatus[port.options.id] = 0;
+  updateLinkPort = (link, port) => {
+    if (port) {
+      if (this.portStatus[port.options.id] === undefined) {
+        this.portStatus[port.options.id] = 0;
+      }
+
+      this.portStatus[port.options.id] += 1;
+
+      if (!this.portsByLink[link.options.id]) {
+        this.portsByLink[link.options.id] = [];
+      }
+
+      this.portsByLink[link.options.id].push(port.options.id);
     }
-    this.portStatus[port.options.id] += 1;
+
   }
 }
 

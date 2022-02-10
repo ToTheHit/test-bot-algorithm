@@ -7,8 +7,6 @@ import customPort from './customPort.less';
 const CustomPort = props => {
   const { port, engine } = props;
 
-  console.log('>>> port', port);
-  console.log('>>> engine', engine);
   const Port = (
     <PortWidget port={port} engine={engine}>
       <div className="customPort" />
