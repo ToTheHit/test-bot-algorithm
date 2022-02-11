@@ -1,0 +1,152 @@
+{
+  //parser: "babel-eslint",
+  /**
+   * @see https://github.com/airbnb/javascript
+   */
+//  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-base",
+    "plugin:react/recommended",
+    "airbnb"
+  ],
+  /**
+   * @see http://eslint.org/docs/rules/
+   */
+  "rules": {
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never",
+      "mjs": "never"
+    }],
+    // # Possible Errors
+    "arrow-parens": [2, "as-needed"],
+    "comma-dangle": [
+      2,
+      "never"
+    ],
+    "valid-jsdoc": [
+      1,
+      {
+        "requireReturn": false,
+        "requireReturnDescription": false
+      }
+    ],
+    // # Best Practices
+
+    "curly": [
+      2,
+      "all"
+    ],
+    "dot-notation": 1,
+    "no-multi-spaces": [
+      2,
+      {
+        "exceptions": {
+          "VariableDeclarator": true,
+          "ImportDeclaration": true
+        }
+      }
+    ],
+    "no-unmodified-loop-condition": 2,
+    "no-useless-call": 2,
+    "no-undef-init": 2,
+    // # Node.js and CommonJS
+
+    "callback-return": 2,
+    "global-require": 2,
+    "handle-callback-err": 2,
+    "no-mixed-requires": [
+      2,
+      {
+        "grouping": true,
+        "allowCall": false
+      }
+    ],
+    "no-new-require": 2,
+    "no-path-concat": 2,
+    "no-sync": 2,
+    // # Styling Issues
+
+    "brace-style": [
+      1,
+      "1tbs"
+    ],
+    "camelcase": 0,
+    "linebreak-style": 2,
+    "max-depth": [
+      1,
+      4
+    ],
+    "newline-after-var": 2,
+    "newline-before-return": 2,
+    "max-len": [
+      1,
+      120
+    ],
+    "max-nested-callbacks": [
+      1,
+      3
+    ],
+    "max-params": [
+      1,
+      {
+        "max": 5
+      }
+    ],
+    "max-statements": [
+      1,
+      {
+        "max": 15
+      }
+    ],
+    "max-statements-per-line": [
+      1,
+      {
+        "max": 1
+      }
+    ],
+    "no-underscore-dangle": 0,
+    "no-restricted-syntax": [
+      2,
+      "DebuggerStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
+    "operator-assignment": 2,
+    "operator-linebreak": [
+      "error",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
+    ],
+    "sort-vars": 2,
+    // # ECMASCript 6
+
+    "arrow-body-style": 0,
+    "constructor-super": 2,
+    "no-this-before-super": 2,
+    "prefer-arrow-callback": 0,
+    "prefer-spread": 2,
+    "require-yield": 2
+  },
+  "plugins": [
+    "node",
+    "security",
+    "you-dont-need-lodash-underscore",
+    "you-dont-need-momentjs",
+    "sonarjs"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  }
+}

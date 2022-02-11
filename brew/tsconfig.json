@@ -4,8 +4,16 @@
     "ibds/src/**/*.ts"
   ],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "target": "es5",
-    "lib": ["es5", "es6", "dom"]
-  }
+    //    "noImplicitAny": true,
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es5", "es6", "es2017", "es2016", "es2015"],
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

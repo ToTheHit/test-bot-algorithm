@@ -1,12 +1,12 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-
 import './index.css';
 import Page404 from "./Pages/Page404/Page404";
 
-
 const App = lazy(() => import('./Pages/Main/App'))
 const Bicycle = lazy(() => import('./Pages/Bicycle/Bicycle'));
+const Editor = lazy(() => import('./Pages/Editor/Editor'));
+const Editor1 = lazy(() => import('./Pages/Editor1/Editor1'));
 
 const ScrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'instant' });
@@ -14,7 +14,7 @@ const ScrollToTop = () => {
 };
 
 const routes = [
-  { path: '/bicycle', Component: Bicycle },
+  { path: '/editor', Component: Editor },
 ]
 
 class AppRouter extends Component {
