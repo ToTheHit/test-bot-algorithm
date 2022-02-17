@@ -53,6 +53,16 @@ const TextNodeWidget = props => {
             label="Текст для сравнения"
             portStatus={portStatus[node.getPort('comparisonText').options.id]}
           />
+          <TextPort
+            port={node.getPort('button')}
+            node={node}
+            engine={engine}
+            name="button"
+            align="left"
+            color="#EDEDED"
+            label="Кнопки"
+            portStatus={portStatus[node.getPort('button').options.id]}
+          />
         </div>
         {/*        <div className="TextNode__contentPorts__right">
           <TextPort

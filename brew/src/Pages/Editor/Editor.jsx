@@ -27,6 +27,7 @@ import StartNodeFactory from './Custom/Start/StartNodeFactory';
 import TextPortFactory from './Custom/Ports/Components/Text/TextPortFactory';
 import FlowPortFactory from './Custom/Ports/Components/Flow/FlowPortFactory';
 import VariablePortFactory from './Custom/Ports/Components/Variable/VariablePortFactory';
+import ButtonPortFactory from './Custom/Ports/Components/Button/ButtonPortFactory'
 
 import store from '../../mobx/Store';
 import EditorStore from '../../mobx/EditorStore';
@@ -185,7 +186,8 @@ const nodeFactories = {
 const portFactories = {
   textPort: new TextPortFactory('text'),
   flowPort: new FlowPortFactory('flow'),
-  variablePort: new VariablePortFactory('variable')
+  variablePort: new VariablePortFactory('variable'),
+  buttonPort: new ButtonPortFactory('button')
 }
 
 const models = {
@@ -401,7 +403,7 @@ const Editor = () => {
     >
       <div className="ControlPanel">
         <button type="button" onClick={() => downloadModel()}>Download</button>
-        {/*<button type="button" onClick={() => exportModel()}>Export</button>*/}
+        <button type="button" onClick={() => exportModel()}>Serialize</button>
         <button type="button" onClick={() => saveModel()}>Save</button>
         <div className="ControlPanel__nodesList">
           {modelElements}
