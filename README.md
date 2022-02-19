@@ -1,5 +1,8 @@
-#[MVP] Algorithm editor for testing chatbots
+# :warning: Work in progress
 
+This is currently a work in progress.
+
+# Algorithm editor for testing chatbots
 - [ ] Front part (MVP)
 - [ ] Server part (MVP)
 
