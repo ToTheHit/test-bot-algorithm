@@ -62,5 +62,6 @@ module.exports = merge(common, {
         PUBLIC_URL: JSON.stringify('')
       }
     })
-  ]
+  ],
+  devtool: 'eval-cheap-module-source-map'
 });

@@ -1,34 +1,37 @@
 @import '../../Pages/Main/app';
 .test-wrapper {
   height: 100vh;
-  background-color: rgb(60, 60, 60);
-  background-size: 50px 50px;
+  background-color: #686868;
   display: flex;
-  background-image:
-    linear-gradient(
-      0deg,
-      transparent 24%,
-      rgba(255, 255, 255, 0.05) 25%,
-      rgba(255, 255, 255, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(255, 255, 255, 0.05) 75%,
-      rgba(255, 255, 255, 0.05) 76%,
-      transparent 77%,
-      transparent
-    ),
-    linear-gradient(
-      90deg,
-      transparent 24%,
-      rgba(255, 255, 255, 0.05) 25%,
-      rgba(255, 255, 255, 0.05) 26%,
-      transparent 27%,
-      transparent 74%,
-      rgba(255, 255, 255, 0.05) 75%,
-      rgba(255, 255, 255, 0.05) 76%,
-      transparent 77%,
-      transparent
-    );
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABZ0RVh0Q3JlYXRpb24gVGltZQAwNi8yMS8yMfpAtEsAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzbovLKMAAACEklEQVR4nO3dsU3EQBBA0QXRBclFNGAXRR+URE4ByBUQXUIfRIBj7r6Ws96Lxtms9LUO925Zlpfx633cpsfd/Dlti8sd5RzjfvYCHJOwSDyM3e9v27bXibv82bquT9/ztm0fM3e5xFHOMYYbi4iwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLxN2yLM+777dpm1zmtJvPk3a4htNuPk/a4SrcWCSEReJh7N4evtXHF9d1/Zlv9QxjHOccY7ixiAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEF1b/l9NuPk/a4SrcWCSERcILq//IUc4xhhuLiLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi4SwSAiLhLBICIuEsEgIi8QXQTowI+WSDrcAAAAASUVORK5CYII=);
+  background-position-x: var(--offset-x);
+  background-position-y: var(--offset-y);
+  background-size: calc(var(--grid-size)*3) calc(var(--grid-size)*3);
+  //background-image:
+  //  linear-gradient(
+  //    0deg,
+  //    transparent 24%,
+  //    rgba(255, 255, 255, 0.05) 25%,
+  //    rgba(255, 255, 255, 0.05) 26%,
+  //    transparent 27%,
+  //    transparent 74%,
+  //    rgba(255, 255, 255, 0.05) 75%,
+  //    rgba(255, 255, 255, 0.05) 76%,
+  //    transparent 77%,
+  //    transparent
+  //  ),
+  //  linear-gradient(
+  //    90deg,
+  //    transparent 24%,
+  //    rgba(255, 255, 255, 0.05) 25%,
+  //    rgba(255, 255, 255, 0.05) 26%,
+  //    transparent 27%,
+  //    transparent 74%,
+  //    rgba(255, 255, 255, 0.05) 75%,
+  //    rgba(255, 255, 255, 0.05) 76%,
+  //    transparent 77%,
+  //    transparent
+  //  );
 }
 
 .canvas-widget {

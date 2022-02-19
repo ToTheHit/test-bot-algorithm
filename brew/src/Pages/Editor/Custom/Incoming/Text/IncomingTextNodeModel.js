@@ -1,5 +1,5 @@
 import { NodeModel } from '@projectstorm/react-diagrams';
-import { FlowPortModel, TextPortModel, MessagePortModel } from '../../Ports/Models';
+import { FlowPortModel, TextPortModel, ButtonPortModel } from '../../Ports/Models';
 
 class IncomingTextNodeModel extends NodeModel {
   constructor(options = {}) {
@@ -12,7 +12,7 @@ class IncomingTextNodeModel extends NodeModel {
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
     this.addPort(new TextPortModel('comparisonText', 'left'));
-    // this.addPort(new MessagePortModel('outgoingMsg', 'right'));
+    this.addPort(new ButtonPortModel('button', 'left'))
   }
 
   serialize() {

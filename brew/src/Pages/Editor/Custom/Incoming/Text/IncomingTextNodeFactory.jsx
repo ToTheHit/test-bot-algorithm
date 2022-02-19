@@ -4,7 +4,7 @@ import IncomingTextNodeModel from './IncomingTextNodeModel';
 import TextNodeWidget from './TextNodeWidget';
 
 export default class IncomingTextNodeFactory extends AbstractReactFactory {
-  constructor(contTest) {
+  constructor() {
     super('incomingText');
   }
 

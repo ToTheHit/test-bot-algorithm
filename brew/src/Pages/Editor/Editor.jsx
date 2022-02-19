@@ -1,19 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import createEngine, {
-  DefaultLinkModel,
-  DefaultNodeModel,
-  DiagramModel
-} from '@projectstorm/react-diagrams';
+import React, { useEffect, useState } from 'react';
+import createEngine, { DiagramModel } from '@projectstorm/react-diagrams';
 
-import {
-  CanvasWidget
-} from '@projectstorm/react-canvas-core';
+import { CanvasWidget } from '@projectstorm/react-canvas-core';
 
 import classNames from '../../lib/classNames';
 import './editor.less';
 
-import { IncomingTextNodeFactory } from './Custom/Incoming/Factories';
-import { IncomingTextNodeModel } from './Custom/Incoming/Models';
+import { IncomingMediaNodeFactory, IncomingTextNodeFactory } from './Custom/Incoming/Factories';
+import { IncomingMediaNodeModel, IncomingTextNodeModel } from './Custom/Incoming/Models';
 
 import { OutgoingTextNodeFactory } from './Custom/Outgoing/Factories';
 import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
@@ -24,188 +18,57 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import StartNodeFactory from './Custom/Start/StartNodeFactory';
 
-import TextPortFactory from './Custom/Ports/Components/Text/TextPortFactory';
-import FlowPortFactory from './Custom/Ports/Components/Flow/FlowPortFactory';
-import VariablePortFactory from './Custom/Ports/Components/Variable/VariablePortFactory';
+import { ButtonPortFactory, FlowPortFactory, TextPortFactory, VariablePortFactory } from './Custom/Ports';
 
-import store from '../../mobx/Store';
+import ZoomAction from './Actions/ZoomAction';
+
+
 import EditorStore from '../../mobx/EditorStore';
-
 import axios from 'axios';
-
-const testModel = {
-  id: 'a1ad350f-5bae-4bda-83ad-f08769a55476',
-  offsetX: 0,
-  offsetY: 0,
-  zoom: 100,
-  gridSize: 0,
-  layers: [
-    {
-      id: '49d4f5d0-8353-41dd-8c20-d31874264bdb',
-      type: 'diagram-links',
-      isSvg: true,
-      transformed: true,
-      models: {
-        'a7b5f4d7-71a5-476c-9f79-55387959a855': {
-          id: 'a7b5f4d7-71a5-476c-9f79-55387959a855',
-          type: 'default',
-          source: 'e6d320ad-2859-447f-a3f2-c69e60ed7987',
-          sourcePort: '37eaf9b7-dde2-4eb7-a529-c8e4130d84c4',
-          target: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-          targetPort: '6a9d8745-4610-40ed-b7ec-4ccf3cca017e',
-          points: [
-            {
-              id: '18a2257c-92ea-412e-b072-500aa713979f',
-              type: 'point',
-              x: 164.625,
-              y: 411
-            },
-            {
-              id: 'f8f76e2d-c783-4c83-8ea1-ba6f41a3d161',
-              type: 'point',
-              x: 310,
-              y: 396
-            }
-          ],
-          labels: [
-            {
-              id: 'aad9eed8-63ca-4bb9-97ac-f2ee6d5b0c20',
-              type: 'default',
-              offsetX: 0,
-              offsetY: -23,
-              label: 'Авто-линк'
-            }
-          ],
-          width: 3,
-          color: 'gray',
-          curvyness: 50,
-          selectedColor: 'rgb(0,192,255)'
-        }
-      }
-    },
-    {
-      id: 'fc0b5643-082f-48a7-a0c1-78fd2cd8ebe9',
-      type: 'diagram-nodes',
-      isSvg: false,
-      transformed: true,
-      models: {
-        'f5e3b97b-34cd-48b8-807e-ea662f09f4bf': {
-          id: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-          type: 'incomingMsg',
-          selected: true,
-          x: 294,
-          y: 210,
-          ports: [
-            {
-              id: '42beb50e-7d4f-4219-80aa-a71013acad74',
-              type: 'flow',
-              x: 295,
-              y: 261,
-              name: 'flowIn',
-              alignment: 'left',
-              parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-              links: []
-            },
-            {
-              id: 'bff872de-4a62-43a7-9fd9-6e23b1ab4945',
-              type: 'flow',
-              x: 599.75,
-              y: 261,
-              name: 'flowOut',
-              alignment: 'right',
-              parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-              links: []
-            },
-            {
-              id: 'c3904ec2-9308-49c3-9405-6c4436d5a5da',
-              type: 'text',
-              x: 295,
-              y: 336,
-              name: 'incomingMsg',
-              alignment: 'left',
-              parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-              links: []
-            },
-            {
-              id: '6a9d8745-4610-40ed-b7ec-4ccf3cca017e',
-              type: 'text',
-              x: 295,
-              y: 381,
-              name: 'comparisonText',
-              alignment: 'left',
-              parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-              links: [
-                'a7b5f4d7-71a5-476c-9f79-55387959a855'
-              ]
-            },
-            {
-              id: '86167a54-798a-4fc1-9f07-a6e41ddcd549',
-              type: 'message',
-              x: 629.75,
-              y: 336,
-              name: 'outgoingMsg',
-              alignment: 'right',
-              parentNode: 'f5e3b97b-34cd-48b8-807e-ea662f09f4bf',
-              links: []
-            }
-          ]
-        },
-        'e6d320ad-2859-447f-a3f2-c69e60ed7987': {
-          id: 'e6d320ad-2859-447f-a3f2-c69e60ed7987',
-          type: 'variableNode',
-          x: 50,
-          y: 400,
-          ports: [
-            {
-              id: '37eaf9b7-dde2-4eb7-a529-c8e4130d84c4',
-              type: 'variable',
-              x: 153.625,
-              y: 401,
-              name: 'out',
-              alignment: 'right',
-              parentNode: 'e6d320ad-2859-447f-a3f2-c69e60ed7987',
-              links: [
-                'a7b5f4d7-71a5-476c-9f79-55387959a855'
-              ]
-            }
-          ]
-        }
-      }
-    }
-  ]
-};
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
   variableNode: new VariableNodeFactory(),
   startNode: new StartNodeFactory(),
-  outgoingText: new OutgoingTextNodeFactory()
+  outgoingText: new OutgoingTextNodeFactory(),
+  mediaNode: new IncomingMediaNodeFactory()
 };
 
 const portFactories = {
   textPort: new TextPortFactory('text'),
   flowPort: new FlowPortFactory('flow'),
-  variablePort: new VariablePortFactory('variable')
-}
+  variablePort: new VariablePortFactory('variable'),
+  buttonPort: new ButtonPortFactory('button')
+};
 
 const models = {
   textNode: data => new IncomingTextNodeModel(data),
   variableNode: data => new VariableNodeModel(data),
   startNode: data => new StartNodeModel(data),
-  outgoingText: data => new OutgoingTextNodeModel(data)
+  outgoingText: data => new OutgoingTextNodeModel(data),
+  mediaNode: data => new IncomingMediaNodeModel(data)
 };
 const hiddenNodes = {
   startNode: true
 };
 
 const Editor = () => {
-  const { updateNode, updateLink, serialize, deserialize } = EditorStore;
+  const {
+    updateNode,
+    updateLink,
+    serialize,
+    deserialize
+  } = EditorStore;
   const [engine, setEngine] = useState(null);
 
   const [model, setModel] = useState(new DiagramModel());
+  const [offset, setOffset] = useState({ x: '0px', y: '0px' })
+  const [gridSize, setGridSize] = useState('15px');
 
   useEffect(() => {
-    const subEngine = createEngine();
+    const subEngine = createEngine({
+      registerDefaultZoomCanvasAction: false
+    });
 
     for (const factoryName of Object.keys(nodeFactories)) {
       subEngine
@@ -218,6 +81,16 @@ const Editor = () => {
         .getPortFactories()
         .registerFactory(portFactories[factoryName]);
     }
+    const actions = [
+      ZoomAction,
+    ];
+    actions.forEach(Action =>
+      subEngine
+        .getActionEventBus()
+        .registerAction(new Action(false)),
+    );
+
+    model.setGridSize(15);
 
     model.registerListener({
       linksUpdated(event) {
@@ -225,6 +98,15 @@ const Editor = () => {
       },
       nodesUpdated(event) {
         updateNode(event.node);
+      },
+      offsetUpdated({offsetX, offsetY}) {
+        setOffset({
+          x: `${Math.round(offsetX)}px`,
+          y: `${Math.round(offsetY)}px`,
+        });
+      },
+      zoomUpdated({ zoom }) {
+        setGridSize(`${(15 * zoom) / 100}px`)
       }
     });
 
@@ -255,7 +137,10 @@ const Editor = () => {
 
     model.addAll(TextNode2, linkFlow);
 
-    const VariableNode = models.variableNode({ title: 'First', value: 'First' });
+    const VariableNode = models.variableNode({
+      title: 'First',
+      value: 'First'
+    });
     const variableNodeOutPort = VariableNode.getPort('out');
     const link1 = comparisonPortTextNode.link(variableNodeOutPort);
 
@@ -264,7 +149,10 @@ const Editor = () => {
 
     model.addAll(VariableNode, link1);
 
-    const VariableNode2 = models.variableNode({ title: 'Second', value: 'Second' });
+    const VariableNode2 = models.variableNode({
+      title: 'Second',
+      value: 'Second'
+    });
     const variableNodeOutPort2 = VariableNode2.getPort('out');
     const link2 = comparisonPortTextNode2.link(variableNodeOutPort2);
 
@@ -319,21 +207,6 @@ const Editor = () => {
     console.log(serialized);
   };
 
-  const { count, change } = store;
-  const [data, setData] = useState([]);
-
-  /*  useEffect(() => {
-    const temp = count.map(obj => <Output key={obj.id} obj={obj} />);
-
-    setData(temp);
-  }, [count]); */
-
-  /*
-  useEffect(() => {
-    console.log(fn(testModel));
-  }, []);
-*/
-
   const [modelElements, setModelElement] = useState([]);
   const handleDragStart = (event, modelName) => {
     event.dataTransfer.setData('modelName', modelName);
@@ -363,11 +236,13 @@ const Editor = () => {
   const onNodeDrop = event => {
     const modelName = event.dataTransfer.getData('modelName');
     const Node = models[modelName]();
-    const { x, y } = engine.getRelativeMousePoint(event);
+    const {
+      x,
+      y
+    } = engine.getRelativeMousePoint(event);
 
     Node.setPosition(x, y);
     model.addAll(Node);
-    // forceUpdate();
     engine.repaintCanvas();
   };
   const handleDragOver = event => {
@@ -377,38 +252,46 @@ const Editor = () => {
     return false;
   };
 
-    const downloadModel = () => {
-      axios.get('http://localhost:3000/algorithm')
-        .then(res => {
-          model.deserializeModel(res.data, engine);
-          engine.setModel(model);
-          deserialize(res.data.store);
-        });
-  }
+  const downloadModel = () => {
+    axios.get('http://localhost:3000/algorithm')
+      .then(res => {
+        model.deserializeModel(res.data, engine);
+        engine.setModel(model);
+        deserialize(res.data.store);
+      });
+  };
   const saveModel = () => {
     const serialized = model.serialize();
 
     Object.assign(serialized, serialize());
-    axios.patch('http://localhost:3000/algorithm', serialized)
-  }
+    axios.patch('http://localhost:3000/algorithm', serialized);
+  };
 
   return (
     <div
       className={classNames('test-wrapper')}
+      style={{
+        "--offset-x": offset.x,
+        "--offset-y": offset.y,
+        "--grid-size": gridSize
+    }}
       onContextMenu={e => {
-      // e.preventDefault();
+        // e.preventDefault();
       }}
     >
       <div className="ControlPanel">
         <button type="button" onClick={() => downloadModel()}>Download</button>
-        {/*<button type="button" onClick={() => exportModel()}>Export</button>*/}
+        <button type="button" onClick={() => exportModel()}>Serialize</button>
         <button type="button" onClick={() => saveModel()}>Save</button>
         <div className="ControlPanel__nodesList">
           {modelElements}
         </div>
       </div>
       <div
-        style={{ height: '100%', width: '100%' }}
+        style={{
+          height: '100%',
+          width: '100%'
+        }}
         onDrop={event => onNodeDrop(event)}
         onDragOver={handleDragOver}
       >
