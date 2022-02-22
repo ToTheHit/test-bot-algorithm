@@ -3,8 +3,8 @@
 This is currently a work in progress.
 
 # Algorithm editor for testing chatbots
-- [ x ] Front part (MVP)
-- [ x ] Server part (MVP)
+- [x] Front part (MVP)
+- [x] Server part (MVP)
 
 
 - [ ] Refactor Front:
