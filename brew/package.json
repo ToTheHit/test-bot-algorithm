@@ -7,9 +7,9 @@
     "product-brew": "webpack --config ./webpack.prod.js",
     "ibds:start": "gulp start",
     "ibds:watch": "gulp watch",
+    "dev": "cross-env NODE_ENV=development nodemon",
     "deploy": "node gh-pages.js",
-    "deploy-now": "now ./ibds/dist",
-    "dev": "nodemon ./server"
+    "deploy-now": "now ./ibds/dist"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -28,20 +28,24 @@
     "axios": "^0.21.1",
     "busboy": "^0.3.1",
     "closest": "^0.0.1",
+    "config": "^3.3.7",
+    "cross-env": "^7.0.3",
     "cssnano": "^5.0.7",
     "dagre": "^0.8.5",
     "emotion": "^11.0.0",
     "eslint-plugin-node": "^11.1.0",
     "express": "^4.16.4",
     "express-asyncify": "^1.0.1",
-    "fs": "0.0.1-security",
+    "fs": "^0.0.1-security",
     "libphonenumber-js": "^1.9.22",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.1.0",
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
     "mobx-react-lite": "^3.2.0",
-    "nodemon": "^2.0.12",
+    "mongoose": "^6.2.2",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7",
     "pathfinding": "^0.4.18",
     "paths-js": "^0.4.11",
     "postcss-preset-env": "^6.7.0",
@@ -54,8 +58,10 @@
     "react-scripts": "^4.0.1",
     "resize-observer-polyfill": "^1.5.1",
     "smoothscroll-polyfill": "^0.4.4",
+    "tsconfig-paths": "^3.12.0",
     "webpack": "^5.47.1",
-    "webpack-merge": "^5.7.3"
+    "webpack-merge": "^5.7.3",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",

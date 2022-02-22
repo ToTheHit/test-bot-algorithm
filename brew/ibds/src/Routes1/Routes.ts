@@ -22,7 +22,7 @@ export default class Routes {
     app.get('/test', (req, res) => {
       res.end("That's all folks, yeah!55555");
     });
-
+/*
     // Uploads a new file on the server.
     app.post('/upload', (req: Request, res: Response) => {
       const saveDir = path.resolve('./uploads/');
@@ -61,6 +61,6 @@ export default class Routes {
 
         res.end(JSON.stringify(response));
       });
-    });
+    });*/
   }
 }

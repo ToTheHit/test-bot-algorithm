@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { AbstractReactFactory } from '@projectstorm/react-canvas-core';
 import MediaNodeWidget from './MediaNodeWidget';
+import IncomingMediaNodeModel from './IncomingMediaNodeModel';
 
 export default class IncomingMediaNodeFactory extends AbstractReactFactory {
   constructor() {
@@ -12,6 +13,6 @@ export default class IncomingMediaNodeFactory extends AbstractReactFactory {
   }
 
   generateModel(event) {
-    return new MediaNodeWidget(event.initialConfig);
+    return new IncomingMediaNodeModel(event.initialConfig);
   }
 }

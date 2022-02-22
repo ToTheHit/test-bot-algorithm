@@ -1,0 +1,13 @@
+{
+    "watch": [
+        "ibds/src",
+        "ibds/.env"
+    ],
+    "ext": "js,ts,json",
+    "ignore": [
+        "ibds/src/**/*.spec.ts",
+        "ibds/src/**/*.test.ts",
+        "ibds/src/services/telegramData.json"
+    ],
+    "exec": "ts-node -r tsconfig-paths/register --transpile-only ibds/src/index.ts"
+}

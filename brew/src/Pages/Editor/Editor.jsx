@@ -3,6 +3,7 @@ import createEngine, { DiagramModel } from '@projectstorm/react-diagrams';
 
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 
+import axios from 'axios';
 import classNames from '../../lib/classNames';
 import './editor.less';
 
@@ -18,13 +19,13 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import StartNodeFactory from './Custom/Start/StartNodeFactory';
 
-import { ButtonPortFactory, FlowPortFactory, TextPortFactory, VariablePortFactory } from './Custom/Ports';
+import {
+  ButtonPortFactory, FlowPortFactory, TextPortFactory, VariablePortFactory
+} from './Custom/Ports';
 
 import ZoomAction from './Actions/ZoomAction';
 
-
 import EditorStore from '../../mobx/EditorStore';
-import axios from 'axios';
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
@@ -62,7 +63,7 @@ const Editor = () => {
   const [engine, setEngine] = useState(null);
 
   const [model, setModel] = useState(new DiagramModel());
-  const [offset, setOffset] = useState({ x: '0px', y: '0px' })
+  const [offset, setOffset] = useState({ x: '0px', y: '0px' });
   const [gridSize, setGridSize] = useState('15px');
 
   useEffect(() => {
@@ -82,13 +83,12 @@ const Editor = () => {
         .registerFactory(portFactories[factoryName]);
     }
     const actions = [
-      ZoomAction,
+      ZoomAction
     ];
-    actions.forEach(Action =>
-      subEngine
-        .getActionEventBus()
-        .registerAction(new Action(false)),
-    );
+
+    actions.forEach(Action => subEngine
+      .getActionEventBus()
+      .registerAction(new Action(false)));
 
     model.setGridSize(15);
 
@@ -99,14 +99,14 @@ const Editor = () => {
       nodesUpdated(event) {
         updateNode(event.node);
       },
-      offsetUpdated({offsetX, offsetY}) {
+      offsetUpdated({ offsetX, offsetY }) {
         setOffset({
           x: `${Math.round(offsetX)}px`,
-          y: `${Math.round(offsetY)}px`,
+          y: `${Math.round(offsetY)}px`
         });
       },
       zoomUpdated({ zoom }) {
-        setGridSize(`${(15 * zoom) / 100}px`)
+        setGridSize(`${(15 * zoom) / 100}px`);
       }
     });
 
@@ -271,10 +271,10 @@ const Editor = () => {
     <div
       className={classNames('test-wrapper')}
       style={{
-        "--offset-x": offset.x,
-        "--offset-y": offset.y,
-        "--grid-size": gridSize
-    }}
+        '--offset-x': offset.x,
+        '--offset-y': offset.y,
+        '--grid-size': gridSize
+      }}
       onContextMenu={e => {
         // e.preventDefault();
       }}

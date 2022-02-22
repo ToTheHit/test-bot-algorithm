@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import './variableNode.less';
@@ -12,11 +12,23 @@ const VariableNodeWidget = props => {
   const { node, engine } = props;
   const { portStatus } = EditorStore;
 
+  const areaRef = useRef(null);
+
   const [align, setAlign] = useState('right');
   const [value, setValue] = useState(node.title || 'Title Variable');
   const [prevDebouncedValue, setPrevDebouncedValue] = useState(node.title || 'Title Variable');
 
   const debouncedValue = useDebounce(value, 2000);
+
+  useEffect(() => {
+    function handleText(event) {
+      event.stopPropagation();
+    }
+
+    if (areaRef && areaRef.current) {
+      areaRef.current.addEventListener('keydown', handleText, false);
+    }
+  }, []);
 
   useEffect(() => {
     if (debouncedValue !== prevDebouncedValue) {
@@ -35,6 +47,7 @@ const VariableNodeWidget = props => {
       <div className="VariableNode__title">
         {/* {title} */}
         <textarea
+          ref={areaRef}
           value={value}
           onChange={onChange}
         />

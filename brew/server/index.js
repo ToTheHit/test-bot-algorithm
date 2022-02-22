@@ -1,6 +1,6 @@
 const express = require('express');
 const asyncify = require('express-asyncify');
-const telegramRouter = require('../ibds/src/Routes/Telegram');
+const telegramRouter = require('../ibds/src/Routes1/Telegram');
 
 const PORT = process.env.PORT || 3001;
 const app = asyncify(express());

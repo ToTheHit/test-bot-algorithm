@@ -65,7 +65,7 @@ class API {
 
       return user;
     } catch (error) {
-      console.error('>>> getUser-error', error);
+      console.error('>>> getUser-error #1', error);
 
       return null;
     }

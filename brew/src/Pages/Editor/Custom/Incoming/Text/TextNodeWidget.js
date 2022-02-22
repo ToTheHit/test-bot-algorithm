@@ -79,7 +79,7 @@ const TextNodeWidget = props => {
         </div> */}
         </div>
       </div>
-    )
+    );
   }, [node.isSelected()]);
 
   return (

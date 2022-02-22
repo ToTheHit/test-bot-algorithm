@@ -20,6 +20,10 @@ class IncomingMediaNodeModel extends NodeModel {
       title: this.title
     };
   }
+
+  deserialize(event, engine) {
+    super.deserialize(event, engine);
+  }
 }
 
 export default IncomingMediaNodeModel;
