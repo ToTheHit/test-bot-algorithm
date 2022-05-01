@@ -1,5 +1,6 @@
 {
-  //parser: "babel-eslint",
+  "parser": "babel-eslint",
+//  "parser": "@babel/eslint-parser",
   /**
    * @see https://github.com/airbnb/javascript
    */
@@ -7,12 +8,18 @@
   "extends": [
     "airbnb-base",
     "plugin:react/recommended",
-    "airbnb"
+    "airbnb",
+    "plugin:mobx/recommended"
   ],
   /**
    * @see http://eslint.org/docs/rules/
    */
   "rules": {
+    "mobx/exhaustive-make-observable": "warn",
+    "mobx/unconditional-make-observable": "error",
+    "mobx/missing-make-observable": "error",
+    "mobx/missing-observer": "warn",
+    "mobx/no-anonymous-observer": "warn",
     "import/extensions": ["error", "ignorePackages", {
       "js": "never",
       "jsx": "never",
@@ -74,13 +81,13 @@
       "1tbs"
     ],
     "camelcase": 0,
-    "linebreak-style": 2,
+    "linebreak-style": 1,
     "max-depth": [
       1,
       4
     ],
-    "newline-after-var": 2,
-    "newline-before-return": 2,
+    "newline-after-var": 1,
+    "newline-before-return": 1,
     "max-len": [
       1,
       120
@@ -133,20 +140,29 @@
     "no-this-before-super": 2,
     "prefer-arrow-callback": 0,
     "prefer-spread": 2,
-    "require-yield": 2
+    "require-yield": 2,
+    "quotes": ["error", "single"],
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
+      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
+    ],
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
   },
   "plugins": [
     "node",
     "security",
     "you-dont-need-lodash-underscore",
     "you-dont-need-momentjs",
-    "sonarjs"
+    "sonarjs",
+    "mobx"
   ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   }
 }

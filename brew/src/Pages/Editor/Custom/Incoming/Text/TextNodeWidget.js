@@ -9,7 +9,6 @@ import classNames from '../../../../../lib/classNames';
 const TextNodeWidget = props => {
   // eslint-disable-next-line react/prop-types
   const { node, engine } = props;
-  const { portStatus } = EditorStore;
 
   const memoizedComponent = useMemo(() => {
     return (
@@ -23,13 +22,13 @@ const TextNodeWidget = props => {
             engine={engine}
             node={node}
             name="flowIn"
-            portStatus={portStatus[node.getPort('flowIn').options.id]}
+            portStatus={node.getPort('flowIn').options.isConnected}
           />
           <FlowPort
             engine={engine}
             node={node}
             name="flowOut"
-            portStatus={portStatus[node.getPort('flowOut').options.id]}
+            portStatus={node.getPort('flowOut').options.isConnected}
           />
         </div>
         <div className="TextNode__contentPorts">
@@ -52,7 +51,7 @@ const TextNodeWidget = props => {
               align="left"
               color="#EDEDED"
               label="Текст для сравнения"
-              portStatus={portStatus[node.getPort('comparisonText').options.id]}
+              portStatus={node.getPort('comparisonText').options.isConnected}
             />
             <TextPort
               port={node.getPort('button')}
@@ -62,7 +61,7 @@ const TextNodeWidget = props => {
               align="left"
               color="#EDEDED"
               label="Кнопки"
-              portStatus={portStatus[node.getPort('button').options.id]}
+              portStatus={node.getPort('button').options.isConnected}
             />
           </div>
           {/*        <div className="TextNode__contentPorts__right">
@@ -93,13 +92,13 @@ const TextNodeWidget = props => {
           engine={engine}
           node={node}
           name="flowIn"
-          portStatus={portStatus[node.getPort('flowIn').options.id]}
+          portStatus={node.getPort('flowIn').options.isConnected}
         />
         <FlowPort
           engine={engine}
           node={node}
           name="flowOut"
-          portStatus={portStatus[node.getPort('flowOut').options.id]}
+          portStatus={node.getPort('flowOut').options.isConnected}
         />
       </div>
       <div className="TextNode__contentPorts">
@@ -122,7 +121,8 @@ const TextNodeWidget = props => {
             align="left"
             color="#EDEDED"
             label="Текст для сравнения"
-            portStatus={portStatus[node.getPort('comparisonText').options.id]}
+            portStatus={node.getPort('comparisonText').options.isConnected}
+
           />
           <TextPort
             port={node.getPort('button')}
@@ -132,7 +132,7 @@ const TextNodeWidget = props => {
             align="left"
             color="#EDEDED"
             label="Кнопки"
-            portStatus={portStatus[node.getPort('button').options.id]}
+            portStatus={node.getPort('button').options.isConnected}
           />
         </div>
         {/*        <div className="TextNode__contentPorts__right">

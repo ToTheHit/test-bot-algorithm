@@ -1,44 +1,64 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router, Redirect, Route, Switch
+} from 'react-router-dom';
 import './index.css';
-import Page404 from "./Pages/Page404/Page404";
+import Page404 from './Pages/Page404/Page404';
 
-const App = lazy(() => import('./Pages/Main/App'))
-const Bicycle = lazy(() => import('./Pages/Bicycle/Bicycle'));
+const App = lazy(() => import('./Pages/Main/App'));
 const Editor = lazy(() => import('./Pages/Editor/Editor'));
-const Editor1 = lazy(() => import('./Pages/Editor1/Editor1'));
+const Login = lazy(() => import('./Pages/Login/Login'));
 
-const ScrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'instant' });
+const ScrollToTop = function ScrollToTop() {
+  // eslint-disable-next-line no-undef
+  window.scrollTo({
+    top: 0,
+    behavior: 'instant'
+  });
+
   return null;
 };
 
 const routes = [
-  { path: '/editor', Component: Editor },
-]
+  {
+    path: '/editor',
+    Component: Editor
+  },
+  // {
+  //   path: '/login',
+  //   Component: Login
+  // }
+];
 
-class AppRouter extends Component {
+const AppRouter = class AppRouter extends Component {
   render() {
     return (
       <Router basename={process.env.PUBLIC_URL}>
-        <Suspense fallback={<div />}> {/*Заглушка пока грузится бандл и стили*/}
+        <Suspense fallback={<div />}>
+          {' '}
+          {/* Заглушка пока грузится бандл и стили */}
           <Route component={ScrollToTop} />
           <Switch>
-            <Route exact path={'/'}>
-                <App />
+            <Route exact path="/">
+              <App />
             </Route>
 
             {routes.map(({ path }) => {
-              return <Route path={path + '/:NotFound'} key={Math.random()}>
-                <Redirect to="/404" />
-              </Route>
+              return (
+                <Route path={`${path}/:NotFound`} key={Math.random()}>
+                  <Redirect to="/404" />
+                </Route>
+              );
             })}
-            {routes.map(({ path, Component }) => (
+            {routes.map(({
+              path,
+              Component
+            }) => (
               <Route key={path} exact path={path}>
                 {() => {
                   return (
-                      <Component />
-                  )
+                    <Component />
+                  );
                 }}
               </Route>
             ))}
@@ -49,6 +69,6 @@ class AppRouter extends Component {
       </Router>
     );
   }
-}
+};
 
 export default AppRouter;

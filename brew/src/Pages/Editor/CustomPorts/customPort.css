@@ -1,0 +1,23 @@
+.customPortLabel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 1px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.customLabel {
+  padding: 0 5px;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+.customPort {
+  width: 15px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.customPort:hover {
+  background: #c0ff00;
+}

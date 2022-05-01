@@ -19,6 +19,8 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import StartNodeFactory from './Custom/Start/StartNodeFactory';
 
+import { SimpleLinkFactory } from './Custom/Links/Factories';
+
 import {
   ButtonPortFactory, FlowPortFactory, TextPortFactory, VariablePortFactory
 } from './Custom/Ports';
@@ -42,6 +44,10 @@ const portFactories = {
   buttonPort: new ButtonPortFactory('button')
 };
 
+const linkFactories = {
+  simpleLink: new SimpleLinkFactory('simpleLink')
+};
+
 const models = {
   textNode: data => new IncomingTextNodeModel(data),
   variableNode: data => new VariableNodeModel(data),
@@ -53,10 +59,8 @@ const hiddenNodes = {
   startNode: true
 };
 
-const Editor = () => {
+const Editor = function Editor() {
   const {
-    updateNode,
-    updateLink,
     serialize,
     deserialize
   } = EditorStore;
@@ -82,6 +86,12 @@ const Editor = () => {
         .getPortFactories()
         .registerFactory(portFactories[factoryName]);
     }
+
+    for (const factoryName of Object.keys(linkFactories)) {
+      subEngine
+        .getLinkFactories()
+        .registerFactory(linkFactories[factoryName]);
+    }
     const actions = [
       ZoomAction
     ];
@@ -93,12 +103,12 @@ const Editor = () => {
     model.setGridSize(15);
 
     model.registerListener({
-      linksUpdated(event) {
-        updateLink(event.link, event.isCreated);
-      },
-      nodesUpdated(event) {
-        updateNode(event.node);
-      },
+      // linksUpdated(event) {
+      //   updateLink(event.link, event.isCreated);
+      // },
+      // nodesUpdated(event) {
+      //   updateNode(event.node);
+      // },
       offsetUpdated({ offsetX, offsetY }) {
         setOffset({
           x: `${Math.round(offsetX)}px`,

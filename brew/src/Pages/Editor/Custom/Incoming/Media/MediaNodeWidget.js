@@ -45,13 +45,13 @@ const MediaNodeWidget = props => {
           engine={engine}
           node={node}
           name="flowIn"
-          portStatus={portStatus[node.getPort('flowIn').options.id]}
+          portStatus={node.getPort('flowIn').options.isConnected}
         />
         <FlowPort
           engine={engine}
           node={node}
           name="flowOut"
-          portStatus={portStatus[node.getPort('flowOut').options.id]}
+          portStatus={node.getPort('flowOut').options.isConnected}
         />
       </div>
     </div>

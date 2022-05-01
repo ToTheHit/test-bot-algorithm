@@ -3,13 +3,13 @@
 This is currently a work in progress.
 
 # Algorithm editor for testing chatbots
-- [ x ] Front part (MVP)
-- [ x ] Server part (MVP)
+- [x] Front part (MVP)
+- [x] Server part (MVP)
 
 
 - [ ] Refactor Front:
   - [ ] Update architecture
-  - [ ] Remove MobX directly from editor, but not from project
+  - [x] Remove MobX directly from editor, but not from project
   - [ ] Fix links direction: links should be always connected from variable node to main node for correct path animation
   - [ ] Add order option for buttons
   - [ ] Fix 'Backspace' and 'Delete' keys event for variable nodes

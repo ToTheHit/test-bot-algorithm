@@ -6,14 +6,14 @@ module.exports = {
     path: `${path.resolve(__dirname, 'dist')}/bundle/`,
     publicPath: './bundle/',
     filename: '[name].bundle.js',
-    chunkFilename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js'
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: ['babel-loader']
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -22,10 +22,10 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[hash].[ext]',
-              outputPath: 'assets/images/',
-            },
-          },
-        ],
+              outputPath: 'assets/images/'
+            }
+          }
+        ]
       },
       {
         test: /\.(ttf|otf|eot|woff|woff2)$/,
@@ -35,21 +35,21 @@ module.exports = {
             options: {
               name: '[name].[ext]',
               publicPath: '../assets/fonts/',
-              outputPath: 'assets/fonts/',
-            },
-          },
-        ],
+              outputPath: 'assets/fonts/'
+            }
+          }
+        ]
       },
       {
         test: /\.(svg)(\?[a-z0-9=&.]+)?$/,
         use: [{
-          loader: '@svgr/webpack',
-        },
-        ],
-      },
-    ],
+          loader: '@svgr/webpack'
+        }
+        ]
+      }
+    ]
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
-  },
+    extensions: ['.js', '.jsx']
+  }
 };

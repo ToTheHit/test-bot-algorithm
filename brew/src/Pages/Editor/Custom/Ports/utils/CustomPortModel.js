@@ -1,9 +1,10 @@
 import {
-  PortModel, DefaultLinkModel
+  PortModel
 } from '@projectstorm/react-diagrams';
-import EditorStore from '../../../../../mobx/EditorStore';
+import { SimpleLinkModel } from '../../Links/Models';
+// import EditorStore from '../../../../../mobx/EditorStore';
 
-const { updateLinkPort } = EditorStore;
+// const { updateLinkPort } = EditorStore;
 
 export default class CustomPortModel extends PortModel {
   constructor(portName, alignment, type) {
@@ -16,16 +17,20 @@ export default class CustomPortModel extends PortModel {
     });
   }
 
+  updatePortStatus() {
+    this.options.isConnected = Object.keys(this.getLinks()).length > 0;
+  }
+
   createLinkModel() {
-    const linkModel = new DefaultLinkModel();
+    const linkModel = new SimpleLinkModel();
 
     linkModel.registerListener({
-      sourcePortChanged(event) {
-        updateLinkPort(event.entity, event.port);
-      },
-      targetPortChanged(event) {
-        updateLinkPort(event.entity, event.port);
-      }
+      // sourcePortChanged(event) {
+      //   updateLinkPort(event.entity, event.port);
+      // },
+      // targetPortChanged(event) {
+      //   updateLinkPort(event.entity, event.port);
+      // }
     });
 
     return linkModel;
@@ -33,10 +38,14 @@ export default class CustomPortModel extends PortModel {
 
   removeLink(link) {
     super.removeLink(link);
+    link.getTargetPort()?.updatePortStatus();
+    link.getSourcePort()?.updatePortStatus();
   }
 
   addLink(link) {
     super.addLink(link);
+    link.getTargetPort()?.updatePortStatus();
+    link.getSourcePort()?.updatePortStatus();
   }
 
   canLinkToPort(port) {
@@ -67,14 +76,17 @@ export default class CustomPortModel extends PortModel {
     link.setSourcePort(this);
     link.setTargetPort(port);
 
+    this.updatePortStatus(true);
+    port.updatePortStatus(true);
+
     return link;
   }
 
   deserialize(event) {
     super.deserialize(event);
 
-    if (Object.keys(this.links).length > 0) {
-      updateLinkPort(this.links[0], this);
-    }
+    // if (Object.keys(this.links).length > 0) {
+    //   updateLinkPort(this.links[0], this);
+    // }
   }
 }

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { PortModelAlignment, PortWidget } from '@projectstorm/react-diagrams';
 
 import './styles.less';
-import { DiamondNodeModel } from './NodeModel';
 
 const CustomNodeWidget = props => {
   const { size, node, engine } = props;

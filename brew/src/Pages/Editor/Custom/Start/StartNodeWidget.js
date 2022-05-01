@@ -20,7 +20,7 @@ const StartNodeWidget = props => {
           engine={engine}
           node={node}
           name="flowOut"
-          portStatus={portStatus[node.getPort('flowOut').options.id]}
+          portStatus={node.getPort('flowOut').options.isConnected}
         />
       </div>
     </div>

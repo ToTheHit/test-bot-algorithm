@@ -7,6 +7,7 @@ import smoothscroll from 'smoothscroll-polyfill';
 import connect from '@vkontakte/vkui-connect';
 import * as serviceWorker from './serviceWorker';
 import AppRouter from './Router';
+import 'antd/dist/antd.css';
 
 connect.send('VKWebAppInit', {});
 

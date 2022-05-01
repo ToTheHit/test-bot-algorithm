@@ -4,7 +4,7 @@ import { FlowPortModel } from '../../Models';
 export default class FlowPortFactory extends AbstractModelFactory {
   constructor(type, cb) {
     super(type);
-    this.cb = (data) => new FlowPortModel(data);
+    this.cb = data => new FlowPortModel(data);
   }
 
   generateModel(event) {

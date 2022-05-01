@@ -56,7 +56,7 @@ const VariableNodeWidget = props => {
         engine={engine}
         node={node}
         name="out"
-        portStatus={portStatus[node.getPort('out').options.id]}
+        portStatus={node.getPort('out').options.isConnected}
         label="test"
         align={align}
       />

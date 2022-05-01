@@ -12,7 +12,7 @@ class IncomingTextNodeModel extends NodeModel {
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
     this.addPort(new TextPortModel('comparisonText', 'left'));
-    this.addPort(new ButtonPortModel('button', 'left'))
+    this.addPort(new ButtonPortModel('button', 'left'));
   }
 
   serialize() {

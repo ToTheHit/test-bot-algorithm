@@ -12,7 +12,8 @@ const TextNodeWidget = props => {
   const { portStatus } = EditorStore;
 
   const memoizedComponent = useMemo(() => {
-    return <div className={classNames('OutgoingTextNode', { 'OutgoingTextNode--selected': node.isSelected() })}>
+    return (
+<div className={classNames('OutgoingTextNode', { 'OutgoingTextNode--selected': node.isSelected() })}>
       <div className="OutgoingTextNode__header">
         <div className="OutgoingTextNode__type" />
         <div className="OutgoingTextNode__title">{node.title}</div>
@@ -22,13 +23,13 @@ const TextNodeWidget = props => {
           engine={engine}
           node={node}
           name="flowIn"
-          portStatus={portStatus[node.getPort('flowIn').options.id]}
+          portStatus={node.getPort('flowIn').options.isConnected}
         />
         <FlowPort
           engine={engine}
           node={node}
           name="flowOut"
-          portStatus={portStatus[node.getPort('flowOut').options.id]}
+          portStatus={node.getPort('flowOut').options.isConnected}
         />
       </div>
       <div className="OutgoingTextNode__contentPorts">
@@ -41,12 +42,13 @@ const TextNodeWidget = props => {
             align="left"
             color="#EDEDED"
             label="Текст для отправки"
-            portStatus={portStatus[node.getPort('outgoingText').options.id]}
+            portStatus={node.getPort('outgoingText').options.isConnected}
           />
         </div>
       </div>
     </div>
-  }, [node.isSelected()])
+)
+  }, [node.isSelected()]);
 
 
   return (
@@ -60,13 +62,13 @@ const TextNodeWidget = props => {
           engine={engine}
           node={node}
           name="flowIn"
-          portStatus={portStatus[node.getPort('flowIn').options.id]}
+          portStatus={node.getPort('flowIn').options.isConnected}
         />
         <FlowPort
           engine={engine}
           node={node}
           name="flowOut"
-          portStatus={portStatus[node.getPort('flowOut').options.id]}
+          portStatus={node.getPort('flowOut').options.isConnected}
         />
       </div>
       <div className="OutgoingTextNode__contentPorts">
@@ -79,7 +81,7 @@ const TextNodeWidget = props => {
             align="left"
             color="#EDEDED"
             label="Текст для отправки"
-            portStatus={portStatus[node.getPort('outgoingText').options.id]}
+            portStatus={node.getPort('outgoingText').options.isConnected}
           />
         </div>
       </div>
