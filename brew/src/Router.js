@@ -7,7 +7,7 @@ import Page404 from './Pages/Page404/Page404';
 
 const App = lazy(() => import('./Pages/Main/App'));
 const Editor = lazy(() => import('./Pages/Editor/Editor'));
-const Login = lazy(() => import('./Pages/Login/Login'));
+// const Login = lazy(() => import('./Pages/Login/Login'));
 
 const ScrollToTop = function ScrollToTop() {
   // eslint-disable-next-line no-undef

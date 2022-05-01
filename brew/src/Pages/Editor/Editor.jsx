@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import createEngine, { DiagramModel } from '@projectstorm/react-diagrams';
-
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 
 import axios from 'axios';
@@ -28,6 +27,7 @@ import {
 import ZoomAction from './Actions/ZoomAction';
 
 import EditorStore from '../../mobx/EditorStore';
+import EditorMenuContext from './ContextMenu/EditorMenuContext';
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
@@ -59,15 +59,20 @@ const hiddenNodes = {
   startNode: true
 };
 
-const Editor = function Editor() {
+const Editor = () => {
   const {
-    serialize,
-    deserialize
+    toggleMenu
   } = EditorStore;
+  // const [menuProps, toggleMenu] = useMenuState();
+  // const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+
   const [engine, setEngine] = useState(null);
 
   const [model, setModel] = useState(new DiagramModel());
-  const [offset, setOffset] = useState({ x: '0px', y: '0px' });
+  const [offset, setOffset] = useState({
+    x: '0px',
+    y: '0px'
+  });
   const [gridSize, setGridSize] = useState('15px');
 
   useEffect(() => {
@@ -109,7 +114,10 @@ const Editor = function Editor() {
       // nodesUpdated(event) {
       //   updateNode(event.node);
       // },
-      offsetUpdated({ offsetX, offsetY }) {
+      offsetUpdated({
+        offsetX,
+        offsetY
+      }) {
         setOffset({
           x: `${Math.round(offsetX)}px`,
           y: `${Math.round(offsetY)}px`
@@ -213,53 +221,21 @@ const Editor = function Editor() {
   const exportModel = () => {
     const serialized = model.serialize();
 
-    Object.assign(serialized, serialize());
+    // Object.assign(serialized, serialize());
     console.log(serialized);
   };
 
-  const [modelElements, setModelElement] = useState([]);
-  const handleDragStart = (event, modelName) => {
-    event.dataTransfer.setData('modelName', modelName);
-  };
+  const addModel = (modelName, position = { clientX: 0, clientY: 0 }) => {
+    const node = models[modelName]();
 
-  useEffect(() => {
-    const reactElements = [];
-
-    for (const modelName of Object.keys(models)) {
-      if (!hiddenNodes[modelName]) {
-        reactElements.push(
-          <div
-            className="ControlPanel__node"
-            draggable
-            onDragStart={event => handleDragStart(event, modelName)}
-            key={`ControlPanel__node__${modelName}`}
-          >
-            {modelName}
-          </div>
-        );
-      }
-    }
-
-    setModelElement(reactElements);
-  }, []);
-
-  const onNodeDrop = event => {
-    const modelName = event.dataTransfer.getData('modelName');
-    const Node = models[modelName]();
     const {
       x,
       y
-    } = engine.getRelativeMousePoint(event);
+    } = engine.getRelativeMousePoint(position);
 
-    Node.setPosition(x, y);
-    model.addAll(Node);
+    node.setPosition(x, y);
+    model.addAll(node);
     engine.repaintCanvas();
-  };
-  const handleDragOver = event => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-
-    return false;
   };
 
   const downloadModel = () => {
@@ -267,13 +243,13 @@ const Editor = function Editor() {
       .then(res => {
         model.deserializeModel(res.data, engine);
         engine.setModel(model);
-        deserialize(res.data.store);
+        // deserialize(res.data.store);
       });
   };
   const saveModel = () => {
     const serialized = model.serialize();
 
-    Object.assign(serialized, serialize());
+    // Object.assign(serialized, serialize());
     axios.patch('http://localhost:3000/algorithm', serialized);
   };
 
@@ -285,28 +261,25 @@ const Editor = function Editor() {
         '--offset-y': offset.y,
         '--grid-size': gridSize
       }}
-      onContextMenu={e => {
-        // e.preventDefault();
-      }}
     >
       <div className="ControlPanel">
         <button type="button" onClick={() => downloadModel()}>Download</button>
         <button type="button" onClick={() => exportModel()}>Serialize</button>
         <button type="button" onClick={() => saveModel()}>Save</button>
-        <div className="ControlPanel__nodesList">
-          {modelElements}
-        </div>
       </div>
       <div
         style={{
           height: '100%',
           width: '100%'
         }}
-        onDrop={event => onNodeDrop(event)}
-        onDragOver={handleDragOver}
+        onContextMenu={e => {
+          e.preventDefault();
+          toggleMenu(true, { x: e.clientX, y: e.clientY }, 'editor');
+        }}
       >
         {engine && <CanvasWidget engine={engine} className="canvas-widget" />}
       </div>
+      <EditorMenuContext addModel={addModel} values={Object.keys(models)} />
     </div>
   );
 };

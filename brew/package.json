@@ -27,6 +27,7 @@
     "@mtproto/core": "^6.0.1",
     "@projectstorm/react-canvas-core": "^6.7.0",
     "@projectstorm/react-diagrams": "^6.7.0",
+    "@szhsin/react-menu": "^3.0.1",
     "antd": "^4.18.8",
     "axios": "^0.21.1",
     "busboy": "^0.3.1",

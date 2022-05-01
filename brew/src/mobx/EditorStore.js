@@ -1,14 +1,27 @@
 import { observable, action, makeObservable } from 'mobx';
 
+const defaultMenuOptions = {
+  anchorPoint: {
+    x: 0,
+    y: 0
+  },
+  type: '', // Type menu which need open/close
+  isToggled: false
+};
+
 class Store {
   nodes = [];
   links = [];
+  menu = defaultMenuOptions;
 
   constructor() {
     makeObservable(this, {
       nodes: observable,
       links: observable,
-      serialize: action
+      menu: observable,
+      serialize: action,
+      toggleMenu: action,
+      deserialize: action
     });
   }
 
@@ -27,6 +40,23 @@ class Store {
 
     this.nodes = nodes;
     this.links = links;
+  }
+
+  /**
+   * @param {boolean} isToggled
+   * @param {{x: number, y: number}} anchorPoint
+   * @param {string} type
+   */
+  toggleMenu = (isToggled = false, anchorPoint = { x: 0, y: 0 }, type = '') => {
+    if (isToggled) {
+      this.menu = {
+        anchorPoint,
+        type, // Type menu which need open/close
+        isToggled
+      };
+    } else {
+      this.menu = defaultMenuOptions;
+    }
   }
 }
 
