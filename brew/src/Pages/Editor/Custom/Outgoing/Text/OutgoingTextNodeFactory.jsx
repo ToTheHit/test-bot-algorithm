@@ -13,7 +13,6 @@ export default class OutgoingTextNodeFactory extends AbstractReactFactory {
   }
 
   generateModel(event) {
-
     return new OutgoingTextNodeModel(event.initialConfig);
   }
 }

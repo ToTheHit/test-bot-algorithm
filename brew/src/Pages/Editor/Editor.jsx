@@ -1,80 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import createEngine, { DiagramModel } from '@projectstorm/react-diagrams';
+import React, {
+  useEffect, useState
+} from 'react';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 
-import axios from 'axios';
 import classNames from '../../lib/classNames';
 import './editor.less';
 
-import { IncomingMediaNodeFactory, IncomingTextNodeFactory } from './Custom/Incoming/Factories';
-import { IncomingMediaNodeModel, IncomingTextNodeModel } from './Custom/Incoming/Models';
-
-import { OutgoingTextNodeFactory } from './Custom/Outgoing/Factories';
-import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
-
-import { VariableNodeFactory } from './Custom/Variables/Factories';
-import { VariableNodeModel } from './Custom/Variables/Models';
-
-import StartNodeModel from './Custom/Start/startNodeModel';
-import StartNodeFactory from './Custom/Start/StartNodeFactory';
-
-import { SimpleLinkFactory } from './Custom/Links/Factories';
-
-import {
-  ButtonPortFactory, FlowPortFactory, TextPortFactory, VariablePortFactory
-} from './Custom/Ports';
-
-import ZoomAction from './Actions/ZoomAction';
-
 import EditorStore from '../../mobx/EditorStore';
 import EditorMenuContext from './ContextMenu/EditorMenuContext';
-
-const nodeFactories = {
-  textNode: new IncomingTextNodeFactory(),
-  variableNode: new VariableNodeFactory(),
-  startNode: new StartNodeFactory(),
-  outgoingText: new OutgoingTextNodeFactory(),
-  mediaNode: new IncomingMediaNodeFactory()
-};
-
-const portFactories = {
-  textPort: new TextPortFactory('text'),
-  flowPort: new FlowPortFactory('flow'),
-  variablePort: new VariablePortFactory('variable'),
-  buttonPort: new ButtonPortFactory('button')
-};
-
-const linkFactories = {
-  simpleLink: new SimpleLinkFactory('simpleLink')
-};
-
-const models = {
-  textNode: data => new IncomingTextNodeModel(data),
-  variableNode: data => new VariableNodeModel(data),
-  startNode: data => new StartNodeModel(data),
-  outgoingText: data => new OutgoingTextNodeModel(data),
-  mediaNode: data => new IncomingMediaNodeModel(data)
-};
-const hiddenNodes = {
-  startNode: true
-};
+import DiagramEngine from './DiagramEngine';
 
 const Editor = () => {
   const {
     toggleMenu
   } = EditorStore;
-  // const [menuProps, toggleMenu] = useMenuState();
-  // const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
+  const [diagramEngine, setDiagramEngine] = useState(null);
 
-  const [engine, setEngine] = useState(null);
+  // const undoRedoListener = useCallback(event => {
+  //   if (event.keyCode === 90 && event.ctrlKey && !event.shiftKey) {
+  //     console.log('keydown UNDO');
+  //
+  //     // @ts-ignore
+  //     // eslint-disable-next-line no-undef
+  //     window.commandManager.undo();
+  //
+  //     engine.repaintCanvas();
+  //   }
+  //
+  //   if (event.keyCode === 90 && event.ctrlKey && event.shiftKey) {
+  //     console.log('keydown REDO');
+  //
+  //     // @ts-ignore
+  //     // eslint-disable-next-line no-undef
+  //     window.commandManager.redo();
+  //
+  //     engine.repaintCanvas();
+  //   }
+  // }, [engine]);
+  // useEffect(() => {
+  //   window.commandManager = new CommandManager();
+  //   window.addEventListener('keydown', undoRedoListener);
+  //
+  //   return () => {
+  //     window.removeEventListener('keydown', undoRedoListener);
+  //   };
+  // }, [engine]);
 
-  const [model, setModel] = useState(new DiagramModel());
   const [offset, setOffset] = useState({
     x: '0px',
     y: '0px'
   });
-  const [gridSize, setGridSize] = useState('15px');
+  const [gridSize, setGridSize] = useState(15);
 
+  useEffect(() => {
+    setDiagramEngine(new DiagramEngine(setGridSize, setOffset));
+  }, []);
+  /*
   useEffect(() => {
     const subEngine = createEngine({
       registerDefaultZoomCanvasAction: false
@@ -97,8 +78,11 @@ const Editor = () => {
         .getLinkFactories()
         .registerFactory(linkFactories[factoryName]);
     }
+    subEngine.commands = new CommandManager();
+
     const actions = [
-      ZoomAction
+      ZoomAction,
+      UndoRedoAction
     ];
 
     actions.forEach(Action => subEngine
@@ -107,29 +91,29 @@ const Editor = () => {
 
     model.setGridSize(15);
 
-    model.registerListener({
-      // linksUpdated(event) {
-      //   updateLink(event.link, event.isCreated);
-      // },
-      // nodesUpdated(event) {
-      //   updateNode(event.node);
-      // },
-      offsetUpdated({
-        offsetX,
-        offsetY
-      }) {
-        setOffset({
-          x: `${Math.round(offsetX)}px`,
-          y: `${Math.round(offsetY)}px`
-        });
-      },
-      zoomUpdated({ zoom }) {
-        setGridSize(`${(15 * zoom) / 100}px`);
-      }
-    });
+    // model.registerListener({
+    //   // linksUpdated(event) {
+    //   //   updateLink(event.link, event.isCreated);
+    //   // },
+    //   // nodesUpdated(event) {
+    //   //   updateNode(event.node);
+    //   // },
+    //   offsetUpdated({
+    //     offsetX,
+    //     offsetY
+    //   }) {
+    //     setOffset({
+    //       x: `${Math.round(offsetX)}px`,
+    //       y: `${Math.round(offsetY)}px`
+    //     });
+    //   },
+    //   zoomUpdated({ zoom }) {
+    //     setGridSize(`${(15 * zoom) / 100}px`);
+    //   }
+    // });
 
     subEngine.setModel(model);
-    setEngine(subEngine);
+    setDiagramEngine(subEngine);
   }, []);
 
   useEffect(() => {
@@ -197,61 +181,11 @@ const Editor = () => {
 
     // model.addAll(TextNode, TextNode2);
   }, []);
+*/
 
-  const removeNode = () => {
-    const nodes = model.getNodes();
-
-    nodes[0].remove();
-    engine.repaintCanvas();
-  };
-
-  const renameLink = () => {
-    const serialized = model.serialize();
-
-    console.log('serialized model', serialized);
-
-    const linkId = Object.keys(serialized.layers[0].models)[0];
-    const link = model.getLink(linkId);
-
-    console.log('link', link);
-
-    link.labels[0].options.label = '1';
-    engine.repaintCanvas();
-  };
-  const exportModel = () => {
-    const serialized = model.serialize();
-
-    // Object.assign(serialized, serialize());
-    console.log(serialized);
-  };
-
-  const addModel = (modelName, position = { clientX: 0, clientY: 0 }) => {
-    const node = models[modelName]();
-
-    const {
-      x,
-      y
-    } = engine.getRelativeMousePoint(position);
-
-    node.setPosition(x, y);
-    model.addAll(node);
-    engine.repaintCanvas();
-  };
-
-  const downloadModel = () => {
-    axios.get('http://localhost:3000/algorithm')
-      .then(res => {
-        model.deserializeModel(res.data, engine);
-        engine.setModel(model);
-        // deserialize(res.data.store);
-      });
-  };
-  const saveModel = () => {
-    const serialized = model.serialize();
-
-    // Object.assign(serialized, serialize());
-    axios.patch('http://localhost:3000/algorithm', serialized);
-  };
+  if (!diagramEngine) {
+    return <div />;
+  }
 
   return (
     <div
@@ -259,13 +193,13 @@ const Editor = () => {
       style={{
         '--offset-x': offset.x,
         '--offset-y': offset.y,
-        '--grid-size': gridSize
+        '--grid-size': `${gridSize}px`
       }}
     >
       <div className="ControlPanel">
-        <button type="button" onClick={() => downloadModel()}>Download</button>
-        <button type="button" onClick={() => exportModel()}>Serialize</button>
-        <button type="button" onClick={() => saveModel()}>Save</button>
+        <button type="button" onClick={diagramEngine.downloadModel}>Download</button>
+        <button type="button" onClick={diagramEngine.exportModel}>Serialize</button>
+        <button type="button" onClick={diagramEngine.saveModel}>Save</button>
       </div>
       <div
         style={{
@@ -277,9 +211,9 @@ const Editor = () => {
           toggleMenu(true, { x: e.clientX, y: e.clientY }, 'editor');
         }}
       >
-        {engine && <CanvasWidget engine={engine} className="canvas-widget" />}
+        {diagramEngine && <CanvasWidget engine={diagramEngine.getEngine()} className="canvas-widget" />}
       </div>
-      <EditorMenuContext addModel={addModel} values={Object.keys(models)} />
+      <EditorMenuContext addModel={diagramEngine.addNode} values={Object.keys(diagramEngine.modelsList)} />
     </div>
   );
 };

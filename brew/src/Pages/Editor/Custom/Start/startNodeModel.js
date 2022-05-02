@@ -1,7 +1,8 @@
 import { NodeModel } from '@projectstorm/react-diagrams';
 import { FlowPortModel } from '../Ports/Models';
+import CustomNodeModel from '../lib/CustomNodeModel';
 
-class StartNodeModel extends NodeModel {
+class StartNodeModel extends CustomNodeModel {
   constructor() {
     super({
       type: 'startNode'
