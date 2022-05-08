@@ -1,4 +1,4 @@
-import SimpleLinkFactory from '../Components/SimpleLink/SimpleLinkFactory';
+import SimpleLinkFactory from './SimpleLinkFactory';
 
 export {
   SimpleLinkFactory

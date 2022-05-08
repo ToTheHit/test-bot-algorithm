@@ -2,7 +2,7 @@ import createEngine from '@projectstorm/react-diagrams';
 import axios from 'axios';
 
 import { CommandManager, CommandHandlers } from './Actions/lib';
-import { ZoomAction, UndoRedoAction } from './Actions';
+import { ZoomAction, UndoRedoAction, DeleteAction } from './Actions';
 import { IncomingMediaNodeFactory, IncomingTextNodeFactory } from './Custom/Incoming/Factories';
 import { VariableNodeFactory } from './Custom/Variables/Factories';
 import StartNodeFactory from './Custom/Start/StartNodeFactory';
@@ -17,6 +17,7 @@ import { IncomingMediaNodeModel, IncomingTextNodeModel } from './Custom/Incoming
 import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
+import { States } from './States';
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
@@ -56,9 +57,8 @@ for (const systemNode of Object.keys(systemNodes)) {
 }
 
 export default class DiagramEngine {
-  constructor(setGridSize, setOffset) {
-    this.setWrapperGridSize = setGridSize;
-    this.setWrapperOffset = setOffset;
+  constructor(wrapperRef) {
+    this.wrapperRef = wrapperRef;
     this.locked = false;
     this.engine = null;
     this.modelsList = allowedModelsList;
@@ -82,21 +82,20 @@ export default class DiagramEngine {
 
   initializeEngine = () => {
     this.engine = createEngine({
-      // registerDefaultDeleteItemsAction: false,
+      registerDefaultDeleteItemsAction: false,
       registerDefaultZoomCanvasAction: false
     });
 
     this.engine.commands = new CommandManager();
     this.engine.registerListener(CommandHandlers(this));
 
-    // this.engine
-    //   .getStateMachine()
-    //   .pushState(new States(this.showSnackbar));
-
+    this.engine
+      .getStateMachine()
+      .pushState(new States());
     const actions = [
       // DuplicateAction,
       // ClipboardAction,
-      // DeleteAction,
+      DeleteAction,
       UndoRedoAction,
       ZoomAction
     ];
@@ -127,7 +126,7 @@ export default class DiagramEngine {
   initializeModel = () => {
     const self = this;
 
-    self.model = new CustomDiagramModel();
+    self.model = new CustomDiagramModel(self);
 
     self.model.setGridSize(this.gridSize);
     self.model.setLocked(false);
@@ -146,20 +145,24 @@ export default class DiagramEngine {
           x: `${Math.round(offsetX)}px`,
           y: `${Math.round(offsetY)}px`
         };
-        self.setWrapperOffset({
-          x: `${Math.round(offsetX)}px`,
-          y: `${Math.round(offsetY)}px`
-        });
+        self.wrapperRef.current.style.setProperty('--offset-x', self.offset.x);
+        self.wrapperRef.current.style.setProperty('--offset-y', self.offset.y);
       },
       zoomUpdated({ zoom }) {
         self.gridSize = (15 * zoom) / 100;
-        self.setWrapperGridSize((15 * zoom) / 100);
+        self.wrapperRef.current.style.setProperty('--grid-size', `${self.gridSize}px`);
       }
     });
 
     this.getEngine().setModel(self.model);
     this.repaintCanvas();
   };
+
+  initializeWrapperOptions = () => {
+    this.wrapperRef.current.style.setProperty('--offset-x', this.offset.x);
+    this.wrapperRef.current.style.setProperty('--offset-y', this.offset.y);
+    this.wrapperRef.current.style.setProperty('--grid-size', `${this.gridSize}px`);
+  }
 
   initializeTestNodes = () => {
     const TextNode = models.textNode({ title: 'TextNode' });
@@ -168,6 +171,7 @@ export default class DiagramEngine {
     const comparisonPortTextNode = TextNode.getPort('comparisonText');
 
     this.getModel().addAll(TextNode);
+    this.engine.fireEvent({ nodes: [TextNode] }, 'componentsAdded');
 
     const TextNode2 = models.textNode({ title: 'TextNode #2' });
 
@@ -176,10 +180,27 @@ export default class DiagramEngine {
 
     const textNodel1Out = TextNode.getPort('flowOut');
     const textNodel2In = TextNode2.getPort('flowIn');
-    const linkFlow = textNodel1Out.link(textNodel2In);
+    // const linkFlow = textNodel1Out.link(textNodel2In);
 
-    this.getModel().addAll(TextNode2, linkFlow);
+    // this.getModel().addAll(TextNode2, linkFlow);
+    this.getModel().addAll(TextNode2);
+    this.engine.fireEvent({ nodes: [TextNode2] }, 'componentsAdded');
 
+    const TextNode3 = models.textNode({ title: 'TextNode #3' });
+
+    TextNode3.setPosition(1150, 500);
+    this.getModel().addAll(TextNode3);
+
+    this.engine.fireEvent({ nodes: [TextNode3] }, 'componentsAdded');
+
+    const TextNode4 = models.textNode({ title: 'TextNode #4' });
+
+    TextNode4.setPosition(650, 500);
+    this.getModel().addAll(TextNode4);
+
+    this.engine.fireEvent({ nodes: [TextNode4] }, 'componentsAdded');
+
+    return;
     const VariableNode = models.variableNode({
       title: 'First',
       value: 'First'
@@ -227,6 +248,7 @@ export default class DiagramEngine {
   downloadModel = () => {
     axios.get('http://localhost:3000/algorithm')
       .then(res => {
+        // this.engine.commands.clear();
         this.getModel().deserializeModel(res.data, this.getEngine());
         // this.getEngine().setModel(this.getModel());
         // or
@@ -240,7 +262,7 @@ export default class DiagramEngine {
     axios.patch('http://localhost:3000/algorithm', serialized);
   }
 
-  exportModel = () => {
+  serializeModel = () => {
     const serialized = this.getModel().serialize();
 
     console.log(serialized);
@@ -256,6 +278,9 @@ export default class DiagramEngine {
 
     node.setPosition(x, y);
     this.getModel().addAll(node);
+
+    this.engine.fireEvent({ nodes: [node] }, 'componentsAdded');
+
     this.repaintCanvas();
   }
 }

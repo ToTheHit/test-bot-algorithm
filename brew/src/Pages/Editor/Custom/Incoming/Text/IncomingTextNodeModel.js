@@ -1,7 +1,8 @@
 import { NodeModel } from '@projectstorm/react-diagrams';
 import { FlowPortModel, TextPortModel, ButtonPortModel } from '../../Ports/Models';
+import CustomNodeModel from '../../lib/CustomNodeModel';
 
-class IncomingTextNodeModel extends NodeModel {
+class IncomingTextNodeModel extends CustomNodeModel {
   constructor(options = {}) {
     super({
       ...options,

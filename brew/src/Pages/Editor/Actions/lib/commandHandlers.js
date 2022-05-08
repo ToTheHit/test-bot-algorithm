@@ -1,4 +1,4 @@
-import { PointModel } from '@projectstorm/react-diagrams';
+import { SimpleLinkModel } from '../../Custom/Links/Models';
 
 const commandHandlers = ({ engine, editComponentConfiguration }) => {
   const adjustLink = (link, nodes = []) => {
@@ -50,20 +50,12 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
       targetPort.addLink(link);
     }
 
-    if (link.getBifurcationSource()) {
-      link.getBifurcationSource().addBifurcation(link);
-    }
-
-    if (link.getBifurcationTarget()) {
-      link.getBifurcationTarget().addBifurcation(link);
-    }
-
     return link;
   };
 
   return {
     /**
-     * Componend added handler. Occurs when a component is added or
+     * Component added handler. Occurs when a component is added or
      * pasted.
      */
     componentsAdded: ({ nodes }) => {
@@ -73,6 +65,16 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
         },
         undo: () => {
           nodes.forEach(node => node.remove());
+        }
+      });
+    },
+    linkPointAdded: ({ link, point, index }) => {
+      engine.commands.add({
+        execute: () => {
+          link.addPoint(point, index);
+        },
+        undo: () => {
+          link.removePoint(point);
         }
       });
     },
@@ -96,13 +98,38 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
     /**
      * Link added handler. Occurs on new links or bifurcations.
      */
-    linkAdded: ({ link }) => {
+    linkAdded: ({ before, after }) => {
+      const controlLink = (from, to) => {
+        from.forEach(linkData => {
+          const oldLink = engine.getModel().getLink(linkData.id);
+
+          oldLink.remove();
+        });
+
+        to.forEach(linkData => {
+          const sourcePort = engine.getModel()
+            .getNode(linkData.sourceEntity.node)
+            .getPortFromID(linkData.sourceEntity.port);
+          const targetPort = engine.getModel()
+            .getNode(linkData.targetEntity.node)
+            .getPortFromID(linkData.targetEntity.port);
+
+          const link = new SimpleLinkModel({ id: linkData.id });
+
+          link.setSourcePort(sourcePort);
+          link.setTargetPort(targetPort);
+          link.setPoints(linkData.points);
+
+          engine.getModel().addLink(link);
+        });
+      };
+
       engine.commands.add({
         execute: () => {
-          engine.getModel().addLink(adjustLink(link));
+          controlLink(before, after);
         },
         undo: () => {
-          link.remove();
+          controlLink(after, before);
         }
       });
     },
@@ -115,32 +142,11 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
         const link = engine.getModel().getLink(from.id);
 
         // Update link points
-        link.setPoints(
-          from.points.map(position => {
-            const point = new PointModel({ link });
+        link.setPoints(from.points);
+        const port = !!from.targetEntity.port &&
+          engine.getModel().getNode(from.targetEntity.node)?.getPortFromID(from.targetEntity.port);
 
-            point.setPosition(position);
-
-            return point;
-          })
-        );
-
-        // Updates bifurcation target
-        if (from.bifurcationTarget) {
-          const target = engine
-            .getModel()
-            .getLink(from.bifurcationTarget);
-
-          link.setBifurcationTarget(target);
-          target.addBifurcation(link);
-        } else if (to.bifurcationTarget) {
-          const oldTarget = engine
-            .getModel()
-            .getLink(to.bifurcationTarget);
-
-          link.setBifurcationTarget(null);
-          oldTarget.removeBifurcation(link);
-        }
+        link.setTargetPort(port || null);
       };
 
       engine.commands.add({
@@ -152,48 +158,46 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
         }
       });
     },
-
     /**
      * Components and links removal handler.
      */
-    entitiesRemoved: ({ nodes, links }) => {
+    entitiesRemoved: ({ nodes, links, points }) => {
       engine.commands.add({
         execute: () => {
+          // Removes all links
+          links.forEach(link => engine.getModel().getLink(link.id).remove());
+
           // Removes all nodes
           nodes.forEach(node => node.remove());
 
-          // Removes all links
-          links.forEach(link => link.remove());
+          // Remove all points
+          points.forEach(({ data }) => data.remove());
         },
         undo: () => {
-          /**
-           * Adds all links in the correct order. Bifurcations should be
-           * added before, otherwise links on the diagram are incorretly
-           * rendered.
-           */
-          links
-            .map(link => adjustLink(link, nodes))
-            .sort((l1, l2) => {
-              if (
-                l1.getBifurcationSource() === l2 ||
-                l1.getBifurcationTarget() === l2
-              ) {
-                return 1;
-              }
-
-              if (
-                l2.getBifurcationSource() === l1 ||
-                l2.getBifurcationTarget() === l1
-              ) {
-                return -1;
-              }
-
-              return 0;
-            })
-            .forEach(link => engine.getModel().addLink(link));
-
           // Adds all nodes
           nodes.forEach(node => engine.getModel().addNode(node));
+
+          links
+            .forEach(linkData => {
+              const sourcePort = engine.getModel().getNode(linkData.sourceEntity.node)
+                .getPortFromID(linkData.sourceEntity.port);
+              const targetPort = engine.getModel().getNode(linkData.targetEntity.node)
+                .getPortFromID(linkData.targetEntity.port);
+
+              const link = new SimpleLinkModel({ id: linkData.id });
+
+              link.setSourcePort(sourcePort);
+              link.setTargetPort(targetPort);
+              link.setPoints(linkData.points);
+
+              engine.getModel().addLink(link);
+
+              link.getSourcePort()?.updatePortStatus();
+              link.getTargetPort()?.updatePortStatus();
+              engine.getModel().addLink(link);
+            });
+
+          points.forEach(({ linkID, data }) => engine.getModel().getLink(linkID).addPoint(data));
         }
       });
     },
@@ -214,15 +218,11 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
         links[state].forEach(({ id, points }) => {
           const link = engine.getModel().getLink(id);
 
-          link.setPoints(
-            points.map(position => {
-              const point = new PointModel({ link });
+          const linkPoints = link.getPoints();
 
-              point.setPosition(position);
-
-              return point;
-            })
-          );
+          linkPoints.forEach(point => {
+            point.setPosition(points[point.getID()].position.x, points[point.getID()].position.y);
+          });
         });
       };
 

@@ -2,11 +2,16 @@ import CustomPortModel from '../utils/CustomPortModel';
 
 export default class VariablePortModel extends CustomPortModel {
   constructor(portName, alignment) {
-    super(portName, alignment, 'variable');
+    super({
+      portName,
+      alignment,
+      type: 'variable',
+      maximumLinks: Infinity
+    });
   }
 
   canLinkToPort(port) {
-    if (this.options.alignment !== port.options.alignment && port.options.type !== 'message') {
+    if (this.options.alignment !== port.options.alignment && port.options.type !== 'flow') {
       return true;
     }
 

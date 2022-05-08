@@ -7,13 +7,16 @@ import { SimpleLinkModel } from '../../Links/Models';
 // const { updateLinkPort } = EditorStore;
 
 export default class CustomPortModel extends PortModel {
-  constructor(portName, alignment, type) {
+  constructor({
+    portName, alignment, type, ...options
+  }) {
     super({
       type,
       name: portName,
       alignment,
       maximumLinks: 1,
-      isConnected: false
+      isConnected: false,
+      ...options
     });
   }
 
@@ -48,18 +51,31 @@ export default class CustomPortModel extends PortModel {
     link.getSourcePort()?.updatePortStatus();
   }
 
-  canLinkToPort(port) {
-    const links = Object.values(this.getLinks() || {});
+  // Проверяем только направление портов
+  canLinkToPort(port, doubleCheck = false) {
+    const reversedPortAlignment = {
+      left: 'right',
+      right: 'left'
+    };
 
-    if (this.options.type !== port.options.type && port.options.type !== 'variable') {
-      return false;
-    }
+    // console.log('canLinkToPort #1', this.options.type !== port.options.type, port.options.type !== 'variable');
 
-    if (this.options.alignment !== port.options.alignment && Object.keys(port.links).length < 1) {
-      if (links.length > 1) {
-        links[0].remove();
-      }
+    // if (this.options.type !== port.options.type && port.options.type !== 'variable') {
+    //   return false;
+    // }
 
+    // console.log('canLinkToPort #2',
+    //   reversedPortAlignment[this.options.alignment] === port.options.alignment,
+    //   Object.keys(port.links).length);
+    // if (Object.keys(port.links).length) {
+    //   console.log('canLinkToPort #3.1', port.links[Object.keys(port.links)[0]].getSourcePort());
+    //   console.log('canLinkToPort #3.2', port.links[Object.keys(port.links)[0]].getTargetPort());
+    // }
+
+    if (
+      reversedPortAlignment[this.options.alignment] === port.options.alignment
+      // Object.keys(port.links).length === (doubleCheck ? 1 : 0)
+    ) {
       return true;
     }
 
@@ -88,5 +104,11 @@ export default class CustomPortModel extends PortModel {
     // if (Object.keys(this.links).length > 0) {
     //   updateLinkPort(this.links[0], this);
     // }
+  }
+
+  getMainLink() {
+    const links = Object.values(this.getLinks());
+
+    return links.length > 0 ? links[0] : null;
   }
 }

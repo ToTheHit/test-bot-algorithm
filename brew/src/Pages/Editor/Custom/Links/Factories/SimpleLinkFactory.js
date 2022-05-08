@@ -1,7 +1,7 @@
 import {
   DefaultLinkFactory
 } from '@projectstorm/react-diagrams';
-import { SimpleLinkModel } from '../../Models';
+import { SimpleLinkModel } from '../Models';
 
 export default class SimpleLinkFactory extends DefaultLinkFactory {
   constructor(type) {

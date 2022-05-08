@@ -6,21 +6,33 @@ export default class CustomNodeModel extends NodeModel {
     super(options);
   }
 
-  setPosition(pointX, pointY) {
-    const { x, y } = { ...this.position };
+  // setPosition(pointX, pointY) {
+  //   const { x, y } = { ...this.position };
+  //
+  //   const command = new Command(
+  //     () => {
+  //       super.setPosition(pointX, pointY);
+  //     },
+  //     () => {
+  //       super.setPosition(x, y);
+  //     }
+  //   );
+  //
+  //   command.execute();
+  //
+  //   // eslint-disable-next-line no-undef
+  //   // window.commandManager.addCommand(command);
+  // }
 
-    const command = new Command(
-      () => {
-        super.setPosition(pointX, pointY);
-      },
-      () => {
-        super.setPosition(x, y);
-      }
-    );
-
-    command.execute();
-
-    // eslint-disable-next-line no-undef
-    // window.commandManager.addCommand(command);
+  getAllLinks() {
+    return Object.values(this.getPorts())
+      .map(port => port.getMainLink())
+      .filter(link => !!link)
+      .reduce(
+        (arr, link) => [...arr, link
+          // ...link.getAllBifurcations()
+        ],
+        []
+      );
   }
 }

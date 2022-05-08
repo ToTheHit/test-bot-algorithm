@@ -1,7 +1,7 @@
-import { NodeModel } from '@projectstorm/react-diagrams';
 import { VariablePortModel } from '../../Ports/Models';
+import CustomNodeModel from '../../lib/CustomNodeModel';
 
-class VariableNodeModel extends NodeModel {
+class VariableNodeModel extends CustomNodeModel {
   constructor(options = {}) {
     super({
       type: 'variableNode'

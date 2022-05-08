@@ -1,7 +1,8 @@
 import { NodeModel } from '@projectstorm/react-diagrams';
 import { FlowPortModel } from '../../Ports/Models';
+import CustomNodeModel from '../../lib/CustomNodeModel';
 
-class IncomingMediaNodeModel extends NodeModel {
+class IncomingMediaNodeModel extends CustomNodeModel {
   constructor(options = {}) {
     super({
       ...options,
