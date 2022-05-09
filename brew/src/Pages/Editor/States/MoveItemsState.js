@@ -132,8 +132,7 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .getModel()
       .getSelectedEntities()
       .filter(
-        model => Object.getPrototypeOf(model) instanceof CustomNodeModel ||
-          Object.getPrototypeOf(model) instanceof SimpleLinkModel
+        model => model instanceof CustomNodeModel || model instanceof SimpleLinkModel
       )
       .map(node => ({
         id: node.getID(),
@@ -146,11 +145,14 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .getModel()
       .getSelectedEntities()
       .filter(
-        model => Object.getPrototypeOf(model) instanceof CustomNodeModel ||
-          Object.getPrototypeOf(model) instanceof PointModel ||
-          Object.getPrototypeOf(model) instanceof SimpleLinkModel
+        model => model instanceof CustomNodeModel ||
+          // TODO: remove comment after merge https://github.com/projectstorm/react-diagrams/pull/939
+          // model instanceof PointModel ||
+          model instanceof SimpleLinkModel
       )
-      .map(node => node.getAllLinks())
+      .map(node => {
+        return node.getAllLinks();
+      })
       .flat()
       .map(link => ({
         id: link.getID(),
@@ -192,7 +194,7 @@ export default class MoveItemsState extends AbstractDisplacementState {
    * Gets all links from a given node, including all its bifurcations.
    */
   getLinksFromNode(node) {
-    if (!(Object.getPrototypeOf(node) instanceof CustomNodeModel)) {
+    if (!(node instanceof CustomNodeModel)) {
       return [];
     }
 
@@ -267,9 +269,9 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .getModel()
       .getSelectedEntities()
       .filter(
-        entity => Object.getPrototypeOf(entity) instanceof CustomNodeModel ||
-          Object.getPrototypeOf(entity) instanceof PointModel ||
-          Object.getPrototypeOf(entity) instanceof SimpleLinkModel
+        entity => entity instanceof CustomNodeModel ||
+          entity instanceof PointModel ||
+          entity instanceof SimpleLinkModel
       )
       .forEach(entity => {
         this.moveEntity(entity, event);

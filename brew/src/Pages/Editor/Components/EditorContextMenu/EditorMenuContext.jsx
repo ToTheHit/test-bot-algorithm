@@ -3,14 +3,14 @@ import {
   ControlledMenu, MenuItem, useMenuState, MenuGroup
 } from '@szhsin/react-menu';
 import { observer } from 'mobx-react';
-import EditorStore from '../../../mobx/EditorStore';
-
+import EditorStore from '../../../../mobx/EditorStore';
+import './controlledMenu.less';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 
 const EditorMenuContext = observer(function EditorMenuContext(props) {
   const {
-    addModel,
+    addNode,
     values
   } = props;
   const {
@@ -37,8 +37,8 @@ const EditorMenuContext = observer(function EditorMenuContext(props) {
     setFilter('');
     toggleMenu(false);
   };
-  const addModelOnCanvas = event => {
-    addModel(event.value, {
+  const addNodeOnCanvas = event => {
+    addNode(event.value, {
       clientX: menu.anchorPoint.x,
       clientY: menu.anchorPoint.y
     });
@@ -64,6 +64,10 @@ const EditorMenuContext = observer(function EditorMenuContext(props) {
       boundingBoxPadding="10"
       onKeyDown={onKeyDown}
       onBlur={onInputBlur}
+      onContextMenu={e => {
+        e.preventDefault();
+      }}
+      className="controlledMenu"
     >
       <li className="szh-menu__item">
         <input
@@ -83,7 +87,7 @@ const EditorMenuContext = observer(function EditorMenuContext(props) {
           .map(modelName => (
             <MenuItem
               value={modelName}
-              onClick={addModelOnCanvas}
+              onClick={addNodeOnCanvas}
               key={modelName}
             >
               {modelName}

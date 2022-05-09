@@ -8,6 +8,7 @@ class VariableNodeModel extends CustomNodeModel {
     });
     this.value = options.value;
     this.title = options.title || 'Variable Node';
+    this.description = options.description;
     this.addPort(new VariablePortModel('out', 'right'));
   }
 

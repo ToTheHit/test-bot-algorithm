@@ -5,16 +5,17 @@ import {
   DragCanvasState,
   SelectingState
 } from '@projectstorm/react-canvas-core';
-import {  PortModel } from '@projectstorm/react-diagrams';
+import { PortModel } from '@projectstorm/react-diagrams';
 import MoveItemsState from './MoveItemsState';
 import DragLinkState from './DragLinkState';
+import SelectingStateWithNotif from './SelectingStateWithNotif';
 
 export default class States extends State {
   constructor() {
     super({
       name: 'diagram-states'
     });
-    this.childStates = [new SelectingState()];
+    this.childStates = [new SelectingStateWithNotif()];
 
     this.dragItems = new MoveItemsState();
     this.dragCanvas = new DragCanvasState();
@@ -36,8 +37,6 @@ export default class States extends State {
           // initiate dragging a new link
           else if (element instanceof PortModel) {
             this.transitionWithEvent(this.dragNewLink, event);
-          // } else if (element instanceof PointModel) {
-          //   this.transitionWithEvent(this.dragPoints, event);
           }
           // move the items (and potentially link points)
           else {

@@ -2,24 +2,25 @@ import React, {
   useEffect, useRef, useState
 } from 'react';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
-
-import classNames from '../../lib/classNames';
+import DetailsContext from './Contexts/DetailsContext';
 import './editor.less';
 
 import EditorStore from '../../mobx/EditorStore';
-import EditorMenuContext from './ContextMenu/EditorMenuContext';
+import EditorMenuContext from './Components/EditorContextMenu/EditorMenuContext';
 import DiagramEngine from './DiagramEngine';
+import LeftPanel from './Components/LeftlPanel/LeftPanel';
+import RightPanel from './Components/RightPanel/RightPanel';
 
 const Editor = () => {
   const {
     toggleMenu
   } = EditorStore;
   const [diagramEngine, setDiagramEngine] = useState(null);
-
+  const [context, setContext] = useState(null);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    const engine = new DiagramEngine(wrapperRef);
+    const engine = new DiagramEngine(wrapperRef, { context, setContext });
 
     setDiagramEngine(engine);
   }, []);
@@ -34,30 +35,51 @@ const Editor = () => {
     return <div />;
   }
 
+  const onDrop = event => {
+    const variableID = event.dataTransfer.getData('variableID');
+    const variableData = diagramEngine.getVariables()[variableID];
+
+    diagramEngine.addNode('variableNode', { clientX: event.clientX, clientY: event.clientY }, variableData);
+  };
+
+  const handleDragOver = event => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+
+    return false;
+  };
+
   return (
     <div
-      className={classNames('test-wrapper')}
+      className="test-wrapper"
       // Offset and grid size controlled by DiagramEngine
       ref={wrapperRef}
     >
-      <div className="ControlPanel">
-        <button type="button" onClick={diagramEngine.downloadModel}>Download</button>
-        <button type="button" onClick={diagramEngine.serializeModel}>Serialize</button>
-        <button type="button" onClick={diagramEngine.saveModel}>Save</button>
-      </div>
-      <div
-        style={{ // TODO: Move to css file
-          height: '100%',
-          width: '100%'
-        }}
-        onContextMenu={e => {
-          e.preventDefault();
-          toggleMenu(true, { x: e.clientX, y: e.clientY }, 'editor');
-        }}
-      >
-        {diagramEngine && <CanvasWidget engine={diagramEngine.getEngine()} className="canvas-widget" />}
-      </div>
-      <EditorMenuContext addModel={diagramEngine.addNode} values={Object.keys(diagramEngine.modelsList)} />
+      <DetailsContext.Provider value={[context, setContext]}>
+        <LeftPanel
+          serializeModel={diagramEngine.serializeModel}
+          downloadModel={diagramEngine.downloadModel}
+          saveModel={diagramEngine.saveModel}
+          variables={diagramEngine.variables}
+        />
+        <div
+          style={{ // TODO: Move to css file
+            height: '100%',
+            width: '100%'
+          }}
+          onContextMenu={e => {
+            e.preventDefault();
+            toggleMenu(true, { x: e.clientX, y: e.clientY }, 'editor');
+          }}
+          onDrop={event => onDrop(event)}
+          onDragOver={handleDragOver}
+        >
+          {diagramEngine && <CanvasWidget engine={diagramEngine.getEngine()} className="canvas-widget" />}
+        </div>
+        <RightPanel />
+        <EditorMenuContext addNode={diagramEngine.addNode} values={Object.keys(diagramEngine.modelsList)} />
+      </DetailsContext.Provider>
+
     </div>
   );
 };

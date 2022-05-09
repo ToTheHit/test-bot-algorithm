@@ -11,4 +11,17 @@ export default class CustomDiagramModel extends DiagramModel {
   getDiagramEngine() {
     return this.engine;
   }
+
+  getSelectedEntities() {
+    return super.getSelectedEntities();
+  }
+
+  clearSelection() {
+    super.clearSelection();
+    this.engine.setSelected([]);
+  }
+
+  setSelection(selected) {
+    this.engine.setSelected(selected);
+  }
 }

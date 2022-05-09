@@ -1,6 +1,7 @@
 import createEngine from '@projectstorm/react-diagrams';
 import axios from 'axios';
 
+import { Toolkit } from '@projectstorm/react-canvas-core';
 import { CommandManager, CommandHandlers } from './Actions/lib';
 import { ZoomAction, UndoRedoAction, DeleteAction } from './Actions';
 import { IncomingMediaNodeFactory, IncomingTextNodeFactory } from './Custom/Incoming/Factories';
@@ -57,9 +58,9 @@ for (const systemNode of Object.keys(systemNodes)) {
 }
 
 export default class DiagramEngine {
-  constructor(wrapperRef) {
+  constructor(wrapperRef, contextControl) {
     this.wrapperRef = wrapperRef;
-    this.locked = false;
+    this.contextControl = contextControl;
     this.engine = null;
     this.modelsList = allowedModelsList;
     this.offset = {
@@ -67,16 +68,21 @@ export default class DiagramEngine {
       y: '0px'
     };
     this.gridSize = 15;
+    this.variables = [];
+    this.normalizedVariables = {};
 
     this.initializeEngine();
     this.initializeModel();
 
     this.initializeTestNodes();
+    this.initializeTestVariables();
   }
 
   getEngine = () => this.engine;
 
   getModel = () => this.engine.getModel();
+
+  getVariables = () => this.normalizedVariables;
 
   repaintCanvas = () => this.engine.repaintCanvas();
 
@@ -245,6 +251,37 @@ export default class DiagramEngine {
     // model.addAll(TextNode, TextNode2);
   }
 
+  initializeTestVariables = () => {
+    this.variables.push({
+      id: Toolkit.UID(),
+      value: 'TestValue',
+      title: 'TestVariable',
+      description: 'TestDescription'
+    });
+    this.variables.push({
+      id: Toolkit.UID(),
+      value: 'TestValue2',
+      title: 'TestVariable2',
+      description: 'TestDescription2'
+    });
+
+    this.normalizedVariables = this.variables.reduce((acc, variable) => {
+      acc[variable.id] = variable;
+
+      return acc;
+    }, {});
+  }
+
+  setSelected = selected => {
+    const { context } = this.contextControl;
+
+    if (!selected.length) {
+      this.contextControl.setContext(null);
+    } else {
+      this.contextControl.setContext(selected);
+    }
+  }
+
   downloadModel = () => {
     axios.get('http://localhost:3000/algorithm')
       .then(res => {
@@ -268,13 +305,13 @@ export default class DiagramEngine {
     console.log(serialized);
   };
 
-  addNode = (modelName, position = { clientX: 0, clientY: 0 }) => {
-    const node = models[modelName]();
+  addNode = (modelName, clientPosition = { clientX: 0, clientY: 0 }, options = {}) => {
+    const node = models[modelName](options);
 
     const {
       x,
       y
-    } = this.getEngine().getRelativeMousePoint(position);
+    } = this.getEngine().getRelativeMousePoint(clientPosition);
 
     node.setPosition(x, y);
     this.getModel().addAll(node);

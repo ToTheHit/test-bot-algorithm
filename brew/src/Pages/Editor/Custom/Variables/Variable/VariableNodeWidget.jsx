@@ -15,7 +15,7 @@ const VariableNodeWidget = props => {
   const areaRef = useRef(null);
 
   const [align, setAlign] = useState('right');
-  const [value, setValue] = useState(node.title || 'Title Variable');
+  const [value, setValue] = useState(node.value || 'Title Variable');
   const [prevDebouncedValue, setPrevDebouncedValue] = useState(node.title || 'Title Variable');
 
   const debouncedValue = useDebounce(value, 2000);
@@ -45,12 +45,13 @@ const VariableNodeWidget = props => {
   return (
     <div className={classNames('VariableNode', { 'VariableNode--selected': node.isSelected() })}>
       <div className="VariableNode__title">
-        {/* {title} */}
-        <textarea
-          ref={areaRef}
-          value={value}
-          onChange={onChange}
-        />
+        {console.log(node)}
+        {node.title}
+        {/* <textarea */}
+        {/*   ref={areaRef} */}
+        {/*   value={value} */}
+        {/*   onChange={onChange} */}
+        {/* /> */}
       </div>
       <VariablePort
         engine={engine}
