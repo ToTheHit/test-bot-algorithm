@@ -138,7 +138,7 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
      * Link changed handler. Occurs when a link is extended.
      */
     linkChanged: ({ before, after }) => {
-      const handleLinkChanged = (from, to) => {
+      const handleLinkChanged = from => {
         const link = engine.getModel().getLink(from.id);
 
         // Update link points
@@ -151,17 +151,54 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
 
       engine.commands.add({
         execute: () => {
-          handleLinkChanged(after, before);
+          handleLinkChanged(after);
         },
         undo: () => {
-          handleLinkChanged(before, after);
+          handleLinkChanged(before);
+        }
+      });
+    },
+    /**
+     * Node's options changed handler
+     */
+    nodeOptionsUpdated: ({ before, after }) => {
+      const handleOptionsChanged = from => {
+        const node = engine.getModel().getNode(from.id);
+
+        node.options = { ...from, selected: false };
+      };
+
+      engine.commands.add({
+        execute: () => {
+          handleOptionsChanged(after);
+        },
+        undo: () => {
+          handleOptionsChanged(before);
+        }
+      });
+    },
+    variableOptionsUpdated: ({ before, after }) => {
+      const handleOptionsChanged = ({ id, options }) => {
+        const diagramEngine = engine.getModel().engine;
+
+        diagramEngine.updateVariableOptions(id, options, false);
+      };
+
+      engine.commands.add({
+        execute: () => {
+          handleOptionsChanged(after);
+        },
+        undo: () => {
+          handleOptionsChanged(before);
         }
       });
     },
     /**
      * Components and links removal handler.
      */
-    entitiesRemoved: ({ nodes, links, points }) => {
+    entitiesRemoved: ({
+      nodes = [], links = [], points = [], variables = []
+    }) => {
       engine.commands.add({
         execute: () => {
           // Removes all links
@@ -172,8 +209,12 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
 
           // Remove all points
           points.forEach(({ data }) => data.remove());
+
+          variables.forEach(variable => engine.getModel().engine.removeVariable(variable.id, false));
         },
         undo: () => {
+          variables.forEach(variable => engine.getModel().engine.addVariable(variable));
+
           // Adds all nodes
           nodes.forEach(node => engine.getModel().addNode(node));
 

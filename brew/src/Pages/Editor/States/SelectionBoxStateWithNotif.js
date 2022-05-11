@@ -18,8 +18,6 @@ export default class SelectionBoxStateWithNotif extends SelectionBoxState {
           const selectedEntities = this.engine.getModel().getSelectedEntities();
 
           this.engine.getModel().setSelection(selectedEntities);
-
-          // console.log('SelectingState', selectedEntities);
         }
       })
     );

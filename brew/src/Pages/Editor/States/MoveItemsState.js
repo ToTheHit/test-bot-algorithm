@@ -98,7 +98,6 @@ export default class MoveItemsState extends AbstractDisplacementState {
             if (targetModel instanceof PortModel) {
               const sourcePort = this.element.getLink().getSourcePort();
 
-              console.log('!!!');
               if (sourcePort.canLinkToPort(targetModel)) {
                 this.element.getLink().setTargetPort(targetModel);
                 const sourceAfter = {

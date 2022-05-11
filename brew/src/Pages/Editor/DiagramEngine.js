@@ -68,8 +68,8 @@ export default class DiagramEngine {
       y: '0px'
     };
     this.gridSize = 15;
-    this.variables = [];
     this.normalizedVariables = {};
+    this.variableNodes = [];
 
     this.initializeEngine();
     this.initializeModel();
@@ -84,7 +84,9 @@ export default class DiagramEngine {
 
   getVariables = () => this.normalizedVariables;
 
-  repaintCanvas = () => this.engine.repaintCanvas();
+  repaintCanvas = () => {
+    this.engine.repaintCanvas();
+  }
 
   initializeEngine = () => {
     this.engine = createEngine({
@@ -252,33 +254,118 @@ export default class DiagramEngine {
   }
 
   initializeTestVariables = () => {
-    this.variables.push({
+    const variables = [];
+
+    variables.push({
       id: Toolkit.UID(),
       value: 'TestValue',
       title: 'TestVariable',
       description: 'TestDescription'
     });
-    this.variables.push({
+    variables.push({
       id: Toolkit.UID(),
       value: 'TestValue2',
       title: 'TestVariable2',
       description: 'TestDescription2'
     });
 
-    this.normalizedVariables = this.variables.reduce((acc, variable) => {
+    this.normalizedVariables = variables.reduce((acc, variable) => {
       acc[variable.id] = variable;
 
       return acc;
     }, {});
+    this.contextControl.setVariablesUpdatedOn(Date.now());
+  }
+
+  /*
+   * 'fireEvent' param used for undo-redo
+   */
+  updateVariableOptions = (id, options, fireEvent = true) => {
+    const before = {
+      id,
+      options: this.normalizedVariables[id]
+    };
+
+    this.normalizedVariables[id] = {
+      ...this.normalizedVariables[id],
+      ...options
+    };
+    const after = {
+      id,
+      options: this.normalizedVariables[id]
+    };
+
+    // TODO: Add this option to 'undo/redo'?
+    //  Now this is only used for rerender leftPanel when variable options were updated
+    this.contextControl.setVariablesUpdatedOn(Date.now());
+    this.variableNodes.forEach(node => {
+      if (node.options.data.id === id) {
+        // eslint-disable-next-line no-param-reassign
+        node.options.data = this.normalizedVariables[id];
+      }
+    });
+    fireEvent && this.engine.fireEvent({ before, after }, 'variableOptionsUpdated');
+
+    this.repaintCanvas();
+  }
+
+  addVariable = data => {
+    const temp = {
+      id: Toolkit.UID(),
+      value: 'TestValue',
+      title: 'TestVariable',
+      description: 'TestDescription'
+    };
+
+    this.normalizedVariables[data?.id || temp.id] = data || temp;
+    this.contextControl.setVariablesUpdatedOn(Date.now());
+  }
+
+  removeVariable = (id, fireEvent = true) => {
+    const variableData = {
+      variables: [this.normalizedVariables[id]],
+      nodes: [],
+      links: [],
+      points: []
+    };
+
+    this.variableNodes.forEach(node => {
+      if (node.options.data.id === id) {
+        variableData.nodes.push(node);
+      }
+    });
+    variableData.links = variableData.nodes.reduce(
+      (arr, node) => [...arr, ...node.getAllLinks()],
+      []
+    )
+      .map(link => ({
+        id: link.getID(),
+        points: link.getPoints(),
+        targetEntity: {
+          node: link.getTargetPort()?.getParent().getID(),
+          port: link.getTargetPort()?.getID()
+        },
+        sourceEntity: {
+          node: link.getSourcePort()?.getParent().getID(),
+          port: link.getSourcePort()?.getID()
+        }
+      }));
+    variableData.nodes.forEach(node => {
+      node.remove();
+    });
+
+    delete this.normalizedVariables[id];
+    this.setSelected([]);
+    this.contextControl.setVariablesUpdatedOn(Date.now());
+
+    fireEvent && this.engine.fireEvent(variableData, 'entitiesRemoved');
   }
 
   setSelected = selected => {
-    const { context } = this.contextControl;
-
     if (!selected.length) {
-      this.contextControl.setContext(null);
+      this.contextControl.setSelected(null);
     } else {
-      this.contextControl.setContext(selected);
+      this.contextControl.setSelected(selected);
     }
   }
 
@@ -307,6 +394,10 @@ export default class DiagramEngine {
 
   addNode = (modelName, clientPosition = { clientX: 0, clientY: 0 }, options = {}) => {
     const node = models[modelName](options);
+
+    if (modelName === 'variableNode') {
+      this.variableNodes.push(node);
+    }
 
     const {
       x,

@@ -149,7 +149,8 @@
       { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"},
       { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
     ],
-    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }]
   },
   "plugins": [
     "node",

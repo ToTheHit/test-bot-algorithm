@@ -8,7 +8,7 @@ class IncomingTextNodeModel extends CustomNodeModel {
       ...options,
       type: 'incomingText'
     });
-    this.title = options.title || 'Text node';
+    // this.title = options.title || 'Text node';
 
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
@@ -19,7 +19,7 @@ class IncomingTextNodeModel extends CustomNodeModel {
   serialize() {
     return {
       ...super.serialize(),
-      title: this.title
+      title: this.options.title
     };
   }
 }

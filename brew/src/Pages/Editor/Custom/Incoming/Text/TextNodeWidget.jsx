@@ -1,18 +1,19 @@
-import React, {
-  useEffect, useMemo, useState, useContext
-} from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { DiagramEngine } from '@projectstorm/react-diagrams';
 import DetailsContext from '../../../Contexts/DetailsContext';
 
 import './textNode.less';
-import EditorStore from '../../../../../mobx/EditorStore';
 import { FlowPort, TextPort } from '../../Ports/Components';
 import classNames from '../../../../../lib/classNames';
+import { IncomingTextNodeModel } from '../Models';
 
 const TextNodeWidget = props => {
-  // eslint-disable-next-line react/prop-types
   const { node, engine } = props;
 
+  // useEffect(() => {
+  //   console.log('>>> node', node);
+  // }, [node.options._updatedOn]);
   // const memoizedComponent = useMemo(() => {
   //   return (
   //     <div className={classNames('TextNode', { 'TextNode--selected': node.isSelected() })}>
@@ -97,7 +98,7 @@ const TextNodeWidget = props => {
     >
       <div className="TextNode__header">
         <div className="TextNode__type" />
-        <div className="TextNode__title">{node.title}</div>
+        <div className="TextNode__title">{node.options.title}</div>
       </div>
       <div className="TextNode__flowPorts">
         <FlowPort
@@ -164,10 +165,13 @@ const TextNodeWidget = props => {
 };
 
 TextNodeWidget.propTypes = {
+  node: PropTypes.instanceOf(IncomingTextNodeModel),
+  engine: PropTypes.instanceOf(DiagramEngine)
 };
 
 TextNodeWidget.defaultProps = {
-  size: 50
+  node: null,
+  engine: null
 };
 
 export default TextNodeWidget;

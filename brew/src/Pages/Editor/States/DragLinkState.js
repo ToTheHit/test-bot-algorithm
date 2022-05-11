@@ -91,6 +91,12 @@ export default class DragLinkState extends AbstractDisplacementState {
 
             return;
           }
+          if (this.isDuplicatePort(targetEntity)) {
+            this.link.remove();
+            this.engine.repaintCanvas();
+
+            return;
+          }
 
           const linksBefore = [];
 
@@ -179,6 +185,27 @@ export default class DragLinkState extends AbstractDisplacementState {
     const sourcePortPosition = sourcePort.getPosition();
 
     return nearby(point, sourcePortPosition, sourcePortSize);
+  }
+
+  isDuplicatePort(targetEntity) {
+    if (Object.keys(targetEntity.getLinks()).length > 1) {
+      const targetLinks = targetEntity.getLinks();
+
+      let count = 0;
+
+      Object.keys(targetLinks).forEach(linkId => {
+        if (
+          targetLinks[linkId].getSourcePort().getID() === this.port.getID() ||
+          targetLinks[linkId].getTargetPort().getID() === this.port.getID()
+        ) {
+          count += 1;
+        }
+      });
+
+      return count === 2;
+    }
+
+    return false;
   }
 
   /*

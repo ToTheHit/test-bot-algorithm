@@ -57,6 +57,9 @@
 .leftPanel__collapse__trigger:hover {
   background: #383838;
 }
+.leftPanel__collapse__trigger--add {
+  cursor: pointer;
+}
 .leftPanel__collapse__variable {
   height: 30px;
   padding: 0 15px;
@@ -70,4 +73,7 @@
 }
 .leftPanel__collapse__variable:hover {
   background: #242424;
+}
+.leftPanel__collapse__variable--selected {
+  border: 1px solid #16eaf1;
 }

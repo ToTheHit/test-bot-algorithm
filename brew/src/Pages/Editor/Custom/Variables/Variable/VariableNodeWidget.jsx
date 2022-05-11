@@ -1,57 +1,29 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import './variableNode.less';
-import EditorStore from '../../../../../mobx/EditorStore';
-import { FlowPort, TextPort, VariablePort } from '../../Ports/Components';
+import { DiagramEngine } from '@projectstorm/react-diagrams';
+import { VariablePort } from '../../Ports/Components';
 import classNames from '../../../../../lib/classNames';
-import useDebounce from '../../../../../lib/useDebounce';
+import DetailsContext from '../../../Contexts/DetailsContext';
+import { VariableNodeModel } from '../Models';
 
 const VariableNodeWidget = props => {
-  // eslint-disable-next-line react/prop-types
   const { node, engine } = props;
-  const { portStatus } = EditorStore;
+  const [context, setContext] = useContext(DetailsContext);
 
-  const areaRef = useRef(null);
-
-  const [align, setAlign] = useState('right');
-  const [value, setValue] = useState(node.value || 'Title Variable');
-  const [prevDebouncedValue, setPrevDebouncedValue] = useState(node.title || 'Title Variable');
-
-  const debouncedValue = useDebounce(value, 2000);
-
-  useEffect(() => {
-    function handleText(event) {
-      event.stopPropagation();
-    }
-
-    if (areaRef && areaRef.current) {
-      areaRef.current.addEventListener('keydown', handleText, false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (debouncedValue !== prevDebouncedValue) {
-      setPrevDebouncedValue(debouncedValue);
-      node.value = debouncedValue;
-    }
-  }, [debouncedValue]);
-
-  const onChange = event => {
-    setValue(event.target.value);
-  };
-
-  // TODO: Переделать изменение value в отдельное меню
   return (
-    <div className={classNames('VariableNode', { 'VariableNode--selected': node.isSelected() })}>
+    <div
+      className={classNames('VariableNode', { 'VariableNode--selected': node.isSelected() })}
+      onClick={() => {
+        const updatedContext = context || [];
+
+        updatedContext.push(node);
+        setContext(updatedContext);
+      }}
+    >
       <div className="VariableNode__title">
-        {console.log(node)}
-        {node.title}
-        {/* <textarea */}
-        {/*   ref={areaRef} */}
-        {/*   value={value} */}
-        {/*   onChange={onChange} */}
-        {/* /> */}
+        {node.options.data.title}
       </div>
       <VariablePort
         engine={engine}
@@ -59,17 +31,20 @@ const VariableNodeWidget = props => {
         name="out"
         portStatus={node.getPort('out').options.isConnected}
         label="test"
-        align={align}
+        align="right"
       />
     </div>
   );
 };
 
 VariableNodeWidget.propTypes = {
+  node: PropTypes.instanceOf(VariableNodeModel),
+  engine: PropTypes.instanceOf(DiagramEngine)
 };
 
 VariableNodeWidget.defaultProps = {
-  size: 50
+  node: null,
+  engine: null
 };
 
 export default VariableNodeWidget;
