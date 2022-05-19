@@ -3,9 +3,14 @@ import { NodeModel } from '@projectstorm/react-diagrams';
 export default class CustomNodeModel extends NodeModel {
   constructor(options = {}) {
     super({
+      isAllowedRemove: true,
       ...options,
       _updatedOn: Date.now()
     });
+  }
+
+  get allowedRemove() {
+    return this.options.isAllowedRemove;
   }
 
   getAllLinks() {
@@ -21,17 +26,17 @@ export default class CustomNodeModel extends NodeModel {
   }
 
   updateOptions(options) {
-    const beforeOptions = this.options;
+    const beforeOptions = this.options.data;
 
-    this.options = {
-      ...this.options,
+    this.options.data = {
+      ...this.options.data,
       ...options,
       _updatedOn: Date.now()
     };
 
     this.getParentCanvasModel().engine.getEngine().fireEvent({
       before: beforeOptions,
-      after: this.options
+      after: this.options.data
     }, 'nodeOptionsUpdated');
     this.getParentCanvasModel().getDiagramEngine().repaintCanvas();
   }

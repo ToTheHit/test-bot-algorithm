@@ -98,7 +98,7 @@ const TextNodeWidget = props => {
     >
       <div className="TextNode__header">
         <div className="TextNode__type" />
-        <div className="TextNode__title">{node.options.title}</div>
+        <div className="TextNode__title">{node.options.data.title || 'IncomingTextNode'}</div>
       </div>
       <div className="TextNode__flowPorts">
         <FlowPort

@@ -77,10 +77,7 @@ const Editor = () => {
           />
         </VariablesContext.Provider>
         <div
-          style={{ // TODO: Move to css file
-            height: '100%',
-            width: '100%'
-          }}
+          className="diagram-wrapper"
           onContextMenu={e => {
             e.preventDefault();
             toggleMenu(true, { x: e.clientX, y: e.clientY }, 'editor');

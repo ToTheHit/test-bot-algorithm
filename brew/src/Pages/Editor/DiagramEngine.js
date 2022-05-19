@@ -19,6 +19,7 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
 import { States } from './States';
+import testModel from '../../../ibds/src/Engine_old/simpleEngineModel';
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
@@ -49,7 +50,8 @@ const models = {
 };
 
 const systemNodes = {
-  startNode: true
+  startNode: true,
+  variableNode: true
 };
 const allowedModelsList = { ...models };
 
@@ -208,7 +210,13 @@ export default class DiagramEngine {
 
     this.engine.fireEvent({ nodes: [TextNode4] }, 'componentsAdded');
 
+    const StartNode = models.startNode();
+
+    StartNode.setPosition(200, 200);
+    this.getModel().addAll(StartNode);
+
     return;
+    // ---------------------------------
     const VariableNode = models.variableNode({
       title: 'First',
       value: 'First'
@@ -231,9 +239,6 @@ export default class DiagramEngine {
     VariableNode2.setPosition(1000, 350);
     this.getModel().addAll(VariableNode2, link2);
 
-    const StartNode = models.startNode();
-
-    StartNode.setPosition(200, 200);
     const startFlowPort = StartNode.getPort('flowOut');
     const textNodel1In = TextNode.getPort('flowIn');
     const linkFlowStart = textNodel1In.link(startFlowPort);
@@ -302,6 +307,7 @@ export default class DiagramEngine {
       if (node.options.data.id === id) {
         // eslint-disable-next-line no-param-reassign
         node.options.data = this.normalizedVariables[id];
+        node.options._updatedOn = Date.now();
       }
     });
     fireEvent && this.engine.fireEvent({ before, after }, 'variableOptionsUpdated');
@@ -370,14 +376,21 @@ export default class DiagramEngine {
   }
 
   downloadModel = () => {
-    axios.get('http://localhost:3000/algorithm')
-      .then(res => {
-        // this.engine.commands.clear();
-        this.getModel().deserializeModel(res.data, this.getEngine());
-        // this.getEngine().setModel(this.getModel());
-        // or
-        this.repaintCanvas();
-      });
+    // axios.get('http://localhost:3000/algorithm')
+    //   .then(res => {
+    //     // this.engine.commands.clear();
+    //     this.getModel().deserializeModel(res.data, this.getEngine());
+    //     // this.getEngine().setModel(this.getModel());
+    //     // or
+    //     this.repaintCanvas();
+    //   });
+    this.getModel().deserializeModel(testModel, this.getEngine());
+
+    this.normalizedVariables = testModel.normalizedVariables;
+    this.variableNodes = testModel.variableNodes.map(nodeID => this.getModel().getNode(nodeID));
+    this.contextControl.setVariablesUpdatedOn(Date.now());
+
+    this.repaintCanvas();
   }
 
   saveModel = () => {
@@ -389,6 +402,8 @@ export default class DiagramEngine {
   serializeModel = () => {
     const serialized = this.getModel().serialize();
 
+    serialized.normalizedVariables = this.normalizedVariables;
+    serialized.variableNodes = this.variableNodes.map(node => node.getID());
     console.log(serialized);
   };
 

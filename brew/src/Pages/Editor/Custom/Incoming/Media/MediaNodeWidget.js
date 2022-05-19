@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import './mediaNode.less';
-import EditorStore from '../../../../../mobx/EditorStore';
-import { FlowPort, TextPort } from '../../Ports/Components';
+import { DiagramEngine } from '@projectstorm/react-diagrams';
+import { FlowPort } from '../../Ports/Components';
 import classNames from '../../../../../lib/classNames';
+import { IncomingMediaNodeModel, IncomingTextNodeModel } from '../Models';
+import DetailsContext from '../../../Contexts/DetailsContext';
 
 const MediaNodeWidget = props => {
-  // eslint-disable-next-line react/prop-types
   const { node = {}, engine } = props;
-  const { portStatus } = EditorStore;
+  const [context, setContext] = useContext(DetailsContext);
 
   // const memoizedComponent = useMemo(() => {
   //   return <div className={classNames('MediaNode', { 'MediaNode--selected': node.isSelected() })}>
@@ -35,10 +36,18 @@ const MediaNodeWidget = props => {
   // }, [node.isSelected()])
 
   return (
-    <div className={classNames('MediaNode', { 'MediaNode--selected': node.isSelected() })}>
+    <div
+      className={classNames('MediaNode', { 'MediaNode--selected': node.isSelected() })}
+      onClick={() => {
+        const updatedContext = context || [];
+
+        updatedContext.push(node);
+        setContext(updatedContext);
+      }}
+    >
       <div className="MediaNode__header">
         <div className="MediaNode__type" />
-        <div className="MediaNode__title">{node.title}</div>
+        <div className="MediaNode__title">{node.options.data.title || 'MediaNode'}</div>
       </div>
       <div className="MediaNode__flowPorts">
         <FlowPort
@@ -59,10 +68,13 @@ const MediaNodeWidget = props => {
 };
 
 MediaNodeWidget.propTypes = {
+  node: PropTypes.instanceOf(IncomingMediaNodeModel),
+  engine: PropTypes.instanceOf(DiagramEngine)
 };
 
 MediaNodeWidget.defaultProps = {
-  size: 50
+  node: null,
+  engine: null
 };
 
 export default MediaNodeWidget;

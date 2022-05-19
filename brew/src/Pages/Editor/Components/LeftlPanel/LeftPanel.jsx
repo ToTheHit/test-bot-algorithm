@@ -8,7 +8,6 @@ import { VariablesContext } from '../../Contexts';
 import classNames from '../../../../lib/classNames';
 import DetailsContext from '../../Contexts/DetailsContext';
 import { VariableNodeModel } from '../../Custom/Variables/Models';
-import DiagramEngine from '../../DiagramEngine';
 
 const LeftPanel = props => {
   const {

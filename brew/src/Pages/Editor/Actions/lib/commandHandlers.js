@@ -165,7 +165,7 @@ const commandHandlers = ({ engine, editComponentConfiguration }) => {
       const handleOptionsChanged = from => {
         const node = engine.getModel().getNode(from.id);
 
-        node.options = { ...from, selected: false };
+        node.options.data = { ...from, selected: false };
       };
 
       engine.commands.add({

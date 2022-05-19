@@ -1,13 +1,16 @@
-import { NodeModel } from '@projectstorm/react-diagrams';
-import { FlowPortModel, TextPortModel, MessagePortModel } from '../../Ports/Models';
+import { FlowPortModel, TextPortModel } from '../../Ports/Models';
 import CustomNodeModel from '../../lib/CustomNodeModel';
 
 class OutgoingTextNodeModel extends CustomNodeModel {
   constructor(options = {}) {
     super({
+      data: {
+        title: '',
+        description: '',
+        ...options
+      },
       type: 'outgoingText'
     });
-    this.title = options.title || 'Outgoing text node';
 
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
@@ -19,7 +22,7 @@ class OutgoingTextNodeModel extends CustomNodeModel {
   serialize() {
     return {
       ...super.serialize(),
-      title: this.title
+      data: this.options.data
     };
   }
 }

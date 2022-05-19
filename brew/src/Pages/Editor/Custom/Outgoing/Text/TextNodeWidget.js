@@ -1,16 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useMemo, useContext
+} from 'react';
 import PropTypes from 'prop-types';
 
 import './textNode.less';
-import EditorStore from '../../../../../mobx/EditorStore';
+import { DiagramEngine } from '@projectstorm/react-diagrams';
 import { FlowPort, TextPort } from '../../Ports/Components';
 import classNames from '../../../../../lib/classNames';
+import DetailsContext from '../../../Contexts/DetailsContext';
+import { OutgoingTextNodeModel } from '../Models';
 
 const TextNodeWidget = props => {
-  // eslint-disable-next-line react/prop-types
   const { node, engine } = props;
-  const { portStatus } = EditorStore;
+  const [context, setContext] = useContext(DetailsContext);
 
+  /*
   const memoizedComponent = useMemo(() => {
     return (
       <div className={classNames('OutgoingTextNode', { 'OutgoingTextNode--selected': node.isSelected() })}>
@@ -49,12 +53,20 @@ const TextNodeWidget = props => {
       </div>
     );
   }, [node.isSelected()]);
-
+   */
   return (
-    <div className={classNames('OutgoingTextNode', { 'OutgoingTextNode--selected': node.isSelected() })}>
+    <div
+      className={classNames('OutgoingTextNode', { 'OutgoingTextNode--selected': node.isSelected() })}
+      onClick={() => {
+        const updatedContext = context || [];
+
+        updatedContext.push(node);
+        setContext(updatedContext);
+      }}
+    >
       <div className="OutgoingTextNode__header">
         <div className="OutgoingTextNode__type" />
-        <div className="OutgoingTextNode__title">{node.title}</div>
+        <div className="OutgoingTextNode__title">{node.options.data.title || 'OutgoingTextNode'}</div>
       </div>
       <div className="OutgoingTextNode__flowPorts">
         <FlowPort
@@ -89,10 +101,13 @@ const TextNodeWidget = props => {
 };
 
 TextNodeWidget.propTypes = {
+  node: PropTypes.instanceOf(OutgoingTextNodeModel),
+  engine: PropTypes.instanceOf(DiagramEngine)
 };
 
 TextNodeWidget.defaultProps = {
-  size: 50
+  node: null,
+  engine: null
 };
 
 export default TextNodeWidget;

@@ -29,13 +29,15 @@ export default class DeleteAction extends Action {
     const entities = this.engine
       .getModel()
       .getSelectedEntities()
-      .filter(model => !model.isLocked());
+      .filter(entity => !entity.isLocked() && entity.allowedRemove);
 
-    this.fireEvent(entities);
+    if (entities.length > 0) {
+      this.fireEvent(entities);
 
-    entities.forEach(model => model.remove());
+      entities.forEach(model => model.remove());
 
-    this.engine.repaintCanvas();
+      this.engine.repaintCanvas();
+    }
   };
 
   /**

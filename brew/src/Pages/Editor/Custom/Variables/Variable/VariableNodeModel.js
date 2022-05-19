@@ -13,13 +13,12 @@ class VariableNodeModel extends CustomNodeModel {
   serialize() {
     return {
       ...super.serialize(),
-      value: this.options.data.value,
-      title: this.options.data.title,
-      description: this.options.data.description
+      data: this.options.data
     };
   }
 
   deserialize(event) {
+    this.options.data = event.data.data;
     super.deserialize(event);
   }
 

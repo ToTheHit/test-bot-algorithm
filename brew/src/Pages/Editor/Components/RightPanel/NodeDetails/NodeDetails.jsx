@@ -5,6 +5,7 @@ import CustomNodeModel from '../../../Custom/lib/CustomNodeModel';
 
 const NodeDetails = props => {
   const { node } = props;
+  const { title, description } = node.options.data;
 
   const [entityOptions, setEntityOptions] = useState(node.options);
   const [needUpdate, setNeedUpdate] = useState(false);
@@ -20,9 +21,7 @@ const NodeDetails = props => {
   useEffect(() => {
     return () => {
       if (needUpdateRef.current) {
-        const options = entityOptionsRef.current;
-
-        delete options.selected;
+        const options = entityOptionsRef.current.data;
 
         node.updateOptions(options);
       }
@@ -32,10 +31,8 @@ const NodeDetails = props => {
   const handleChange = event => {
     const field = event.target.attributes.getNamedItem('data-field').value;
 
-    setEntityOptions({
-      ...entityOptions,
-      [field]: event.target.value
-    });
+    entityOptions.data[field] = event.target.value;
+    setEntityOptions(entityOptions);
     setNeedUpdate(true);
   };
 
@@ -54,7 +51,15 @@ const NodeDetails = props => {
         className="NodeDetails__title--editor"
         data-field="title"
         onChange={e => handleChange(e)}
-        defaultValue={node.options.title}
+        defaultValue={title}
+        onBlur={updateOptions}
+      />
+      <div className="NodeDetails__title">Description</div>
+      <input
+        className="NodeDetails__title--editor"
+        data-field="description"
+        onChange={e => handleChange(e)}
+        defaultValue={description}
         onBlur={updateOptions}
       />
     </div>

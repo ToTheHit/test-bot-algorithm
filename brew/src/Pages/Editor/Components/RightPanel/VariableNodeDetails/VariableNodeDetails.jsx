@@ -23,10 +23,8 @@ const VariableNodeDetails = props => {
   useEffect(() => {
     return () => {
       if (needUpdateRef.current) {
-        const options = entityOptionsRef.current;
+        const options = entityOptionsRef.current.data;
 
-        delete options.selected;
-        delete options.id;
         engine.updateVariableOptions(node.options.data.id, options);
       }
     };
@@ -35,19 +33,13 @@ const VariableNodeDetails = props => {
   const handleChange = event => {
     const field = event.target.attributes.getNamedItem('data-field').value;
 
-    setEntityOptions({
-      ...entityOptions,
-      [field]: event.target.value
-    });
-
+    entityOptions.data[field] = event.target.value;
+    setEntityOptions(entityOptions);
     setNeedUpdate(true);
   };
 
   const updateOptions = () => {
-    const options = entityOptionsRef.current;
-
-    delete options.selected;
-    delete options.id;
+    const options = entityOptionsRef.current.data;
 
     engine.updateVariableOptions(node.options.data.id, options);
 
