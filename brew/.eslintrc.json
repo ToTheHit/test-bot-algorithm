@@ -87,7 +87,6 @@
       1,
       4
     ],
-    "newline-after-var": 1,
     "newline-before-return": 1,
     "max-len": [
       1,
@@ -150,7 +149,8 @@
       { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
     ],
     "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-    "no-unused-expressions": ["error", { "allowShortCircuit": true }]
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "no-continue": 0
   },
   "plugins": [
     "node",

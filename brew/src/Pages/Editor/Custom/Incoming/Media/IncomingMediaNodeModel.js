@@ -15,17 +15,6 @@ class IncomingMediaNodeModel extends CustomNodeModel {
     this.addPort(new FlowPortModel('flowIn', 'left'));
     this.addPort(new FlowPortModel('flowOut', 'right'));
   }
-
-  serialize() {
-    return {
-      ...super.serialize(),
-      data: this.options.data
-    };
-  }
-
-  deserialize(event, engine) {
-    super.deserialize(event, engine);
-  }
 }
 
 export default IncomingMediaNodeModel;

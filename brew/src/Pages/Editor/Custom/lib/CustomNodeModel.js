@@ -40,4 +40,16 @@ export default class CustomNodeModel extends NodeModel {
     }, 'nodeOptionsUpdated');
     this.getParentCanvasModel().getDiagramEngine().repaintCanvas();
   }
+
+  serialize() {
+    return {
+      ...super.serialize(),
+      data: this.options.data || {}
+    };
+  }
+
+  deserialize(event) {
+    this.options.data = event.data.data;
+    super.deserialize(event);
+  }
 }

@@ -2,9 +2,6 @@ import {
   PortModel
 } from '@projectstorm/react-diagrams';
 import { SimpleLinkModel } from '../../Links/Models';
-// import EditorStore from '../../../../../mobx/EditorStore';
-
-// const { updateLinkPort } = EditorStore;
 
 export default class CustomPortModel extends PortModel {
   constructor({
@@ -98,9 +95,16 @@ export default class CustomPortModel extends PortModel {
     return link;
   }
 
+  serialize() {
+    return {
+      ...super.serialize(),
+      isConnected: this.options.isConnected
+    };
+  }
+
   deserialize(event) {
     super.deserialize(event);
-
+    this.options.isConnected = event.data.isConnected;
     // if (Object.keys(this.links).length > 0) {
     //   updateLinkPort(this.links[0], this);
     // }

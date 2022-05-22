@@ -376,25 +376,40 @@ export default class DiagramEngine {
   }
 
   downloadModel = () => {
-    // axios.get('http://localhost:3000/algorithm')
-    //   .then(res => {
-    //     // this.engine.commands.clear();
-    //     this.getModel().deserializeModel(res.data, this.getEngine());
-    //     // this.getEngine().setModel(this.getModel());
-    //     // or
-    //     this.repaintCanvas();
-    //   });
-    this.getModel().deserializeModel(testModel, this.getEngine());
+    axios.get('http://localhost:3000/algorithm')
+      .then(res => {
+        this.getModel().deserializeModel(res.data, this.getEngine());
 
-    this.normalizedVariables = testModel.normalizedVariables;
-    this.variableNodes = testModel.variableNodes.map(nodeID => this.getModel().getNode(nodeID));
-    this.contextControl.setVariablesUpdatedOn(Date.now());
+        this.normalizedVariables = res.data.normalizedVariables;
+        this.variableNodes = res.data.variableNodes.map(nodeID => this.getModel().getNode(nodeID));
+        this.contextControl.setVariablesUpdatedOn(Date.now());
+        this.contextControl.setSelected(null);
 
-    this.repaintCanvas();
+        this.repaintCanvas();
+      });
+
+    // this.getModel().deserializeModel(testModel, this.getEngine());
+    // this.normalizedVariables = testModel.normalizedVariables;
+    // this.variableNodes = testModel.variableNodes.map(nodeID => this.getModel().getNode(nodeID));
+    // this.contextControl.setVariablesUpdatedOn(Date.now());
+    // this.repaintCanvas();
+  }
+
+  sendStart = () => {
+    axios.get('http://localhost:3000/algorithm/start');
+  }
+
+  sendStop = () => {
+    axios.get('http://localhost:3000/algorithm/stop');
   }
 
   saveModel = () => {
     const serialized = this.getModel().serialize();
+
+    console.log('>> this.normalizedVariables', this.normalizedVariables);
+    serialized.normalizedVariables = this.normalizedVariables;
+    serialized.variableNodes = this.variableNodes.map(node => node.getID());
+    console.log('>> serialized', serialized);
 
     axios.patch('http://localhost:3000/algorithm', serialized);
   }

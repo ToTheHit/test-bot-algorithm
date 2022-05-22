@@ -18,13 +18,6 @@ class OutgoingTextNodeModel extends CustomNodeModel {
     this.addPort(new TextPortModel('outgoingText', 'left'));
     // this.addPort(new MessagePortModel('outgoingMsg', 'right'));
   }
-
-  serialize() {
-    return {
-      ...super.serialize(),
-      data: this.options.data
-    };
-  }
 }
 
 export default OutgoingTextNodeModel;

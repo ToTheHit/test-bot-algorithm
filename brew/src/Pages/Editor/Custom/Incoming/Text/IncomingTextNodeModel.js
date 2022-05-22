@@ -17,13 +17,6 @@ class IncomingTextNodeModel extends CustomNodeModel {
     this.addPort(new TextPortModel('comparisonText', 'left'));
     this.addPort(new ButtonPortModel('button', 'left'));
   }
-
-  serialize() {
-    return {
-      ...super.serialize(),
-      data: this.options.data
-    };
-  }
 }
 
 export default IncomingTextNodeModel;

@@ -8,17 +8,20 @@ This is currently a work in progress.
 
 
 - [ ] Refactor Front:
-  - [ ] Update architecture
+  - [x] Update architecture
   - [x] Remove MobX directly from editor, but not from project
-  - [ ] Fix links direction: links should be always connected from variable node to main node for correct path animation
-  - [ ] Add order option for buttons
-  - [ ] Fix 'Backspace' and 'Delete' keys event for variable nodes
+  - [x] Fix links direction: links should be always connected from variable node to main node for correct path animation
+  - [x] Add order option for buttons
+  - [x] Fix 'Backspace' and 'Delete' keys event for variable nodes
+  - [ ] Clear tab with node options after remove this node on canvas
 
 
 - [ ] Refactor Server
     - [ ] Update architecture
     - [ ] Add more abstraction layers
     - [ ] Add more messengers
-
+--------
+- [ ] Features
+  - [ ] Front: Add "copy and paste"
 
 ![img_1.png](public/img_1.png)

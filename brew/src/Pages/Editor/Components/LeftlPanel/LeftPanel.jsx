@@ -96,6 +96,7 @@ const LeftPanel = props => {
       <button type="button" onClick={downloadModel}>Download</button>
       <button type="button" onClick={serializeModel}>Serialize</button>
       <button type="button" onClick={saveModel}>Save</button>
+      {/* <button type="button" onClick={getVariables}>Get Variables</button> */}
       <div className="leftPanel__divider" />
 
       <Collapsible

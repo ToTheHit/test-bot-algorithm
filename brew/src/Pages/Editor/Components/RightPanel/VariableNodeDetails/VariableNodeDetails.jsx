@@ -1,3 +1,4 @@
+// TODO: fix update variable options... Now that's a bad code...
 import React, {
   useEffect, useState, useRef, useMemo
 } from 'react';
@@ -21,6 +22,8 @@ const VariableNodeDetails = props => {
   }, [entityOptions, needUpdate]);
 
   useEffect(() => {
+    setEntityOptions(node.options);
+
     return () => {
       if (needUpdateRef.current) {
         const options = entityOptionsRef.current.data;
@@ -28,13 +31,16 @@ const VariableNodeDetails = props => {
         engine.updateVariableOptions(node.options.data.id, options);
       }
     };
-  }, []);
+  }, [node.options.data.id]);
 
   const handleChange = event => {
     const field = event.target.attributes.getNamedItem('data-field').value;
 
-    entityOptions.data[field] = event.target.value;
-    setEntityOptions(entityOptions);
+    const { options } = node;
+
+    options.data[field] = event.target.value;
+
+    setEntityOptions(options);
     setNeedUpdate(true);
   };
 
@@ -53,7 +59,6 @@ const VariableNodeDetails = props => {
   const variableData = useMemo(() => {
     return (
       <div className="NodeDetails">
-        {node.options.data.value}
         <div className="NodeDetails__title">Title</div>
         <input
           key={`nodeDetails_${node.options.id}_title`}
