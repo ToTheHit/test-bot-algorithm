@@ -70,14 +70,14 @@
   <script>
     // If you're creating a Project Pages site and NOT using a custom domain,
     // then set segmentCount to 1 (enterprise users may need to set it to > 1).
-    let segmentCount = 0;
+    let segmentCount = 1;
     // If you are developing locally, then set isDevVersion to "true"
     let isDevVesrion = false;
 
     let l = window.location;
     let mainBundlePath = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + l.pathname.split('/').slice(0, 1 + segmentCount).join('/');
     let mainBundleScript = document.createElement('script');
-    mainBundleScript.src = mainBundlePath + (isDevVesrion ? '' : '/bundle/') + '/main.bundle.js';
+    mainBundleScript.src = mainBundlePath + (isDevVesrion ? '' : '/bundle') + '/main.bundle.js';
 
     document.head.appendChild(mainBundleScript);
   </script>
