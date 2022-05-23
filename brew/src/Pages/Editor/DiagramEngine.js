@@ -19,7 +19,6 @@ import { VariableNodeModel } from './Custom/Variables/Models';
 import StartNodeModel from './Custom/Start/startNodeModel';
 import { OutgoingTextNodeModel } from './Custom/Outgoing/Models';
 import { States } from './States';
-import testModel from '../../../ibds/src/Engine_old/simpleEngineModel';
 
 const nodeFactories = {
   textNode: new IncomingTextNodeFactory(),
