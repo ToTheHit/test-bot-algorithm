@@ -13,7 +13,7 @@ const { sleep } = require('@mtproto/core/src/utils/common');
 import Algorithm from '@interfaces/algorithm.interface';
 
 const allowedIds = new Map([
-  [`${process.env.TEST_USER_ID}`, 'bot_hotel']
+  [`${process.env.TG_HOTEL_ID}`, 'bot_hotel']
 ]);
 
 class TelegramUserService {
@@ -48,9 +48,11 @@ class TelegramUserService {
           continue;
         }
         const { message: text, media, reply_markup } = message;
+        // console.log(message);
 
         if (allowedIds.get(`${message.peer_id.user_id}`)) {
-          logger.info(`updates: ${text.out ? 'outgoing' : 'incoming'} > ${message.message}`);
+          // console.log('!!!', message);
+          logger.info(`updates: ${text.out ? 'outgoing' : 'incoming'} > ${message.message || message.media._}`);
           const buttons = [];
           if (reply_markup && reply_markup._ === 'replyKeyboardMarkup') {
             reply_markup.rows.forEach((row, index) => {
@@ -70,7 +72,7 @@ class TelegramUserService {
       }
 
       if (messages.length) {
-        logger.info(`updates: ${messages.length}`);
+        // logger.info(`updates: ${messages.length}`);
         for (const message of messages) {
           await this.executeIncomeMessage(message);
         }
@@ -81,7 +83,7 @@ class TelegramUserService {
       // console.log(updateInfo);
       logger.info(`updateShortMessage: ${updateInfo.out ? 'outgoing' : 'incoming'} > ${updateInfo.message}`);
 
-      await this.executeIncomeMessage(updateInfo.message);
+      await this.executeIncomeMessage({ text: updateInfo.message });
     });
 
     this.mtproto.updates.on('updateShortChatMessage', updateInfo => {
@@ -97,13 +99,27 @@ class TelegramUserService {
     return this.telegramUser.updateOne({ _id: userId }, data);
   }
 
-  public async init() {
-    const { _flowId, flowContext } = await this.telegramUser.findOne({ phone: this.userPhone }).select('_flowId flowContext').lean();
-    if (!flowContext.currentId) {
-      const algorithm: Algorithm = await algorithmModel.findOne({ _id: _flowId }).select('parsedEngine').lean();
+  public async activateDeactivate(phone: string, activate: boolean): Promise<UpdateWriteOpResult> {
+    const $set = {
+      isActive: activate
+    }
+    if (activate) {
+      $set.flowContext = {}
+    }
+    await this.telegramUser.updateOne({ phone: phone }, {$set})
+    if (activate) {
+      await this.init(true);
 
-      await this.sendMessage(algorithm.parsedEngine['start'].content);
-      await this.telegramUser.updateOne({ phone: this.userPhone }, { $set: { 'flowContext.currentId': algorithm.parsedEngine['start'].nextId } });
+    }
+  }
+
+  public async init(force = false) {
+    const { _flowId, flowContext } = await this.telegramUser.findOne({ phone: this.userPhone }).select('_flowId flowContext').lean();
+    if (!flowContext.currentId || force) {
+      const {parsedEngine}: Algorithm = await algorithmModel.findOne({ _id: _flowId }).select('parsedEngine.start').lean();
+
+      await this.telegramUser.updateOne({ phone: this.userPhone }, { $set: { 'flowContext.currentId': parsedEngine['start'].nextId } });
+      await this.sendMessage(parsedEngine['start'].content);
     }
   }
 
@@ -148,10 +164,16 @@ class TelegramUserService {
   }
 
   // 04cba40d-f05b-4929-b750-becf61e33161
-  private async executeIncomeMessage({ text, media, buttons }) {
+  private async executeIncomeMessage({ text = '', media = '', buttons = [] }) {
+    // console.log({ text, media, buttons });
     const currentDate = Date.now();
     const lastMessageDate = this.lastMessageDate;
-    const { _flowId, flowContext } = await this.telegramUser.findOne({ phone: this.userPhone }).select('_flowId flowContext').lean();
+
+    const { _flowId, flowContext, isActive } = await this.telegramUser.findOne({ phone: this.userPhone })
+      .select('_flowId flowContext isActive').lean();
+    if (!isActive) {
+      return;
+    }
     const algorithm: Algorithm = await algorithmModel.findOne({ _id: _flowId }).select('parsedEngine').lean();
     let currentBlock = algorithm.parsedEngine[flowContext.currentId || 'start'];
     let nextBlock = algorithm.parsedEngine[(currentBlock && currentBlock.nextId) || 'start'];
@@ -170,8 +192,9 @@ class TelegramUserService {
             allButtons.push(button);
           });
         });
+        // console.log(allButtons);
         if (currentBlock.buttons.length !== allButtons.length) {
-          logger.error(`Unexpected buttons count. Expected: ${allButtons.length}. Actual: ${currentBlock.buttons.length}`);
+          logger.error(`Unexpected buttons count. Actual: ${allButtons.length}. Expected: ${currentBlock.buttons.length}`);
           return;
         }
         currentBlock.buttons.forEach(button => {
@@ -205,12 +228,24 @@ class TelegramUserService {
   // TODO: разделить методы на текстовые сообщения и медиа
   public async sendMessage(content) {
     try {
-      await new Promise(resolve => setTimeout(() => resolve(true), 2000));
+      await new Promise(resolve => setTimeout(() => resolve(true), 5000));
+      // console.log('>>> sendMessage #2', {
+      //   peer: {
+      //     _: 'inputPeerUser',
+      //     user_id: process.env.TG_API_ID,
+      //     access_hash: `${process.env.TG_API_HASH}`,
+      // user_id: 494424456,
+      //   access_hash: 123,
+      //   },
+      //   message: content,
+      //   random_id: `${new Date().valueOf()}`,
+      // });
+
       await this.call('messages.sendMessage', {
         peer: {
           _: 'inputPeerUser',
-          user_id: process.env.TEST_USER_ID,
-          access_hash: `${process.env.TEST_ACCESS_HASH}`,
+          user_id: process.env.TG_HOTEL_ID,
+          access_hash: `${process.env.TG_HOTEL_HASH}`,
         },
         message: content,
         random_id: `${new Date().valueOf()}`,

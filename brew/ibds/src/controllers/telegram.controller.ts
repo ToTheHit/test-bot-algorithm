@@ -33,7 +33,7 @@ class TelegramController {
 
     if (!telegramServiceInstance) {
       telegramServiceInstance = new TelegramUserService(req.body.phone);
-      this.telegramServiceInstances.set(req.body.phone, telegramServiceInstance);
+      this.telegramServiceInstances.set(`${req.body.phone}`, telegramServiceInstance);
     }
     this.telegramService = telegramServiceInstance;
   }
@@ -147,6 +147,17 @@ class TelegramController {
 
     res.send(signInResult);
   };
+
+  public start = async (req, res) => {
+    this.telegramService.activateDeactivate(req.body.phone, true);
+
+    res.send({});
+  }
+  public stop = async (req, res) => {
+    await this.telegramService.activateDeactivate(req.body.phone, false);
+
+    res.send({});
+  }
 }
 
 export default TelegramController;

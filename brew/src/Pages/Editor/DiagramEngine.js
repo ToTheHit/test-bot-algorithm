@@ -76,8 +76,8 @@ export default class DiagramEngine {
     this.initializeEngine();
     this.initializeModel();
 
-    this.initializeTestNodes();
-    this.initializeTestVariables();
+    // this.initializeTestNodes();
+    // this.initializeTestVariables();
   }
 
   getEngine = () => this.engine;
@@ -165,6 +165,10 @@ export default class DiagramEngine {
     });
 
     this.getEngine().setModel(self.model);
+    const StartNode = models.startNode();
+
+    StartNode.setPosition(200, 200);
+    this.getModel().addAll(StartNode);
     this.repaintCanvas();
   };
 
@@ -209,11 +213,6 @@ export default class DiagramEngine {
     this.getModel().addAll(TextNode4);
 
     this.engine.fireEvent({ nodes: [TextNode4] }, 'componentsAdded');
-
-    const StartNode = models.startNode();
-
-    StartNode.setPosition(200, 200);
-    this.getModel().addAll(StartNode);
 
     return;
     // ---------------------------------
@@ -396,20 +395,24 @@ export default class DiagramEngine {
   }
 
   sendStart = () => {
-    axios.get('http://localhost:3000/algorithm/start');
+    axios.post('http://localhost:3000/telegram/start', {
+      phone: '79306924137'
+    });
   }
 
   sendStop = () => {
-    axios.get('http://localhost:3000/algorithm/stop');
+    axios.post('http://localhost:3000/telegram/stop', {
+      phone: '79306924137'
+    });
   }
 
   saveModel = () => {
     const serialized = this.getModel().serialize();
 
-    console.log('>> this.normalizedVariables', this.normalizedVariables);
     serialized.normalizedVariables = this.normalizedVariables;
-    serialized.variableNodes = this.variableNodes.map(node => node.getID());
-    console.log('>> serialized', serialized);
+    serialized.variableNodes = this.variableNodes
+      .filter(node => node?.getID())
+      .map(node => node.getID());
 
     axios.patch('http://localhost:3000/algorithm', serialized);
   }
@@ -418,7 +421,9 @@ export default class DiagramEngine {
     const serialized = this.getModel().serialize();
 
     serialized.normalizedVariables = this.normalizedVariables;
-    serialized.variableNodes = this.variableNodes.map(node => node.getID());
+    serialized.variableNodes = this.variableNodes
+      .filter(node => node?.getID())
+      .map(node => node.getID());
     console.log(serialized);
   };
 

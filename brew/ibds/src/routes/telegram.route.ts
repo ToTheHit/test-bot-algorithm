@@ -25,6 +25,10 @@ class TelegramRoute implements Routes {
     this.router.post(`${this.path}/code/send`, this.telegramController.sendCode);
     this.router.post(`${this.path}/code/accept`, this.telegramController.signIn);
     this.router.post(`${this.path}/code/password`, this.telegramController.signInPassword);
+
+    this.router.post(`${this.path}/start`, this.telegramController.start);
+    this.router.post(`${this.path}/stop`, this.telegramController.stop);
+
   }
 }
 

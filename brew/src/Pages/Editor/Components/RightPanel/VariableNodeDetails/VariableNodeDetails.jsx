@@ -69,13 +69,14 @@ const VariableNodeDetails = props => {
           onBlur={updateOptions}
         />
         <div className="NodeDetails__title">Value</div>
-        <input
+        <textarea
           key={`nodeDetails_${node.options.id}_value`}
           className="NodeDetails__title--editor"
           data-field="value"
           onChange={handleChange}
           defaultValue={node.options.data.value}
           onBlur={updateOptions}
+
         />
 
         <div className="NodeDetails__title">Description</div>

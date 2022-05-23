@@ -74,6 +74,9 @@ const Editor = () => {
             saveModel={diagramEngine.saveModel}
             variables={diagramEngine.normalizedVariables}
             addVariable={diagramEngine.addVariable}
+            // Temp
+            start={diagramEngine.sendStart}
+            stop={diagramEngine.sendStop}
           />
         </VariablesContext.Provider>
         <div

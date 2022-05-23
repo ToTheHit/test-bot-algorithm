@@ -1,17 +1,16 @@
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
+
 const webpack = require('webpack');
-
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-const common = require('./webpack.config.js');
+const common = require('./webpack.config');
 
 // Paste here part of Github Pages URL after github.io/
-const page = 'stash';
+const page = 'test-bot-algorithm';
 
 module.exports = merge(common, {
   mode: 'production',
   output: {
-    publicPath: './bundle/',
+    publicPath: './bundle/'
   },
   module: {
     rules: [
@@ -19,28 +18,28 @@ module.exports = merge(common, {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
+          'css-loader'
+        ]
       },
       {
         test: /\.less$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'less-loader',
-        ],
-      },
-    ],
+          'less-loader'
+        ]
+      }
+    ]
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '/styles/[name].css',
-      chunkFilename: '/styles/[id].css',
+      filename: './styles/[name].css',
+      chunkFilename: './styles/[id].css'
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        PUBLIC_URL: JSON.stringify(`${page}`),
-      },
-    }),
-  ],
+        PUBLIC_URL: JSON.stringify(`${page}`)
+      }
+    })
+  ]
 });

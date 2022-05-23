@@ -1,4 +1,5 @@
 import { Action, InputType } from '@projectstorm/react-canvas-core';
+import { PointModel } from '@projectstorm/react-diagrams';
 import CustomNodeModel from '../Custom/lib/CustomNodeModel';
 import { SimpleLinkModel } from '../Custom/Links/Models';
 import { SimplePointModel } from '../Custom/Points/Models';
@@ -29,7 +30,8 @@ export default class DeleteAction extends Action {
     const entities = this.engine
       .getModel()
       .getSelectedEntities()
-      .filter(entity => !entity.isLocked() && entity.allowedRemove);
+      // TODO: remove 'instanceof' after accept PR
+      .filter(entity => !entity.isLocked() && (entity.allowedRemove || entity instanceof PointModel));
 
     if (entities.length > 0) {
       this.fireEvent(entities);

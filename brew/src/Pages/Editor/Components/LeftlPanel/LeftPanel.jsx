@@ -15,7 +15,9 @@ const LeftPanel = props => {
     serializeModel,
     saveModel,
     variables = {},
-    addVariable
+    addVariable,
+    start,
+    stop
   } = props;
   const [variablesUpdatedOn] = useContext(VariablesContext);
   const [selected, setSelected] = useState(null);
@@ -96,6 +98,8 @@ const LeftPanel = props => {
       <button type="button" onClick={downloadModel}>Download</button>
       <button type="button" onClick={serializeModel}>Serialize</button>
       <button type="button" onClick={saveModel}>Save</button>
+      <button type="button" onClick={start}>Start</button>
+      <button type="button" onClick={stop}>Stop</button>
       {/* <button type="button" onClick={getVariables}>Get Variables</button> */}
       <div className="leftPanel__divider" />
 

@@ -6,30 +6,34 @@ const telegramUserSchema: Schema = new Schema({
     type: String,
     enum: ['telegram', 'vk'],
     required: true,
-    protected: true,
+    protected: true
   },
   _flowId: {
     type: Schema.Types.ObjectId,
-    default: null,
+    default: null
   },
   flowContext: {
     type: Schema.Types.Mixed,
-    default: null,
+    default: null
   },
   phone: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   title: {
     type: String,
-    default: null,
+    default: null
   },
   mtprotoStorage: {
     type: Map,
     of: { type: String },
-    default: null,
+    default: null
   },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const telegramUserModel = model<TelegramUser & Document>('TelegramUser', telegramUserSchema);

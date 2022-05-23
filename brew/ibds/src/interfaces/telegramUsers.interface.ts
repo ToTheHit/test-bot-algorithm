@@ -13,4 +13,5 @@ export default interface TelegramUser {
   mtprotoStorage: Schema.Types.Map;
   title: String;
   phone: String;
+  isActive: Boolean;
 }

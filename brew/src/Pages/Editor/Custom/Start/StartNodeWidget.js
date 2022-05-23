@@ -1,13 +1,11 @@
 import React from 'react';
 import classNames from '../../../../lib/classNames';
-import EditorStore from '../../../../mobx/EditorStore';
 import { FlowPort } from '../Ports/Components';
 
 import './startNode.less';
 
 const StartNodeWidget = props => {
   const { node, engine } = props;
-  const { portStatus } = EditorStore;
 
   return (
     <div className={classNames('StartNode', { 'StartNode--selected': node.isSelected() })}>

@@ -14,7 +14,7 @@ import {
   closestPointToLink
 } from '../lib/common';
 import CustomNodeModel from '../Custom/lib/CustomNodeModel';
-import { SimpleLinkModel } from '../Custom/Links/Models';
+import { SimplePointModel } from '../Custom/Points/Models';
 
 /**
  * This State handles node moving.
@@ -131,7 +131,7 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .getModel()
       .getSelectedEntities()
       .filter(
-        model => model instanceof CustomNodeModel || model instanceof SimpleLinkModel
+        model => model instanceof CustomNodeModel
       )
       .map(node => ({
         id: node.getID(),
@@ -146,8 +146,7 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .filter(
         model => model instanceof CustomNodeModel ||
           // TODO: remove comment after merge https://github.com/projectstorm/react-diagrams/pull/939
-          // model instanceof PointModel ||
-          model instanceof SimpleLinkModel
+          model instanceof SimplePointModel
       )
       .map(node => {
         return node.getAllLinks();
@@ -269,8 +268,7 @@ export default class MoveItemsState extends AbstractDisplacementState {
       .getSelectedEntities()
       .filter(
         entity => entity instanceof CustomNodeModel ||
-          entity instanceof PointModel ||
-          entity instanceof SimpleLinkModel
+          entity instanceof PointModel
       )
       .forEach(entity => {
         this.moveEntity(entity, event);

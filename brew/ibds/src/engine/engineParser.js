@@ -28,8 +28,8 @@ const parser = engine => {
 
   for (const nodeId of Object.keys(nodes)) {
     const currentNode = nodes[nodeId];
-    // Пропускаем ноды со значениями, так как они нужны только для хранения value
 
+    // Пропускаем ноды со значениями, так как они нужны только для хранения value
     if (currentNode.type === 'variableNode') {
       continue;
     }
@@ -53,12 +53,13 @@ const parser = engine => {
         nextId = getNextNodeIdByLink(currentNode.id, links[port.links[0]]);
       } else if (['outgoingText', 'comparisonText'].includes(port.name)) {
         const node = getNextNodeIdByLink(currentNode.id, links[port.links[0]]);
-        content = node ? nodes[node].value : null;
+
+        content = nodes[node]?.data.value || null;
       } else if (port.type === 'button' && port.links.length > 0) {
         for (const link of port.links) {
           // const node = getNextNodeIdByLink(currentNode.id, links[link]);
 
-          buttons.push(nodes[getNextNodeIdByLink(currentNode.id, links[link])].value);
+          buttons.push(nodes[getNextNodeIdByLink(currentNode.id, links[link])].data.value);
         }
       }
     }
