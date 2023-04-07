@@ -28,6 +28,7 @@ class API {
 
       if (error_code === 420) {
         // tmp msg
+        // tmtmt
         const seconds = Number(error_message.split('FLOOD_WAIT_')[1]);
         const ms = seconds * 1000;
 
